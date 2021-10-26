@@ -18,6 +18,7 @@ client.on('ready', ()=>{
 })
 
 client.on('messageCreate', async message => {
+    let allowedChannels = config.allowedChannels
     if(!allowedChannels.includes(message.channel.id)) return;
 
     if(message.author.bot) return;
