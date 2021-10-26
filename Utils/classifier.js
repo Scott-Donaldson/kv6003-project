@@ -14,14 +14,16 @@ class Classifier {
     }
 
     classifyMessage = async message => {
-        let model = await toxicmodel.load(this.threashold)
+        let timeTaken = process.hrtime()
+        let model = await toxicmodel.load(this._threashold)
         let res = await model.classify([message])
-        return this.parseClassifiedMessage(res)
+        timeTaken = process.hrtime(timeTaken)
+        return this.parseClassifiedMessage(res, message, timeTaken)
     }
-    parseClassifiedMessage = results => {
-        let resultObject = {}
+    parseClassifiedMessage = (results, message, executionTime) => {
+        let resultObject = {message: message, executionTime: {seconds: executionTime[0], milliseconds: Math.round(executionTime[1] / 1e6)}, results: {}}
         results.forEach(element => {
-            resultObject[element.label] = element.results[0].match || false
+            resultObject.results[element.label] = element.results[0].match || false
         })
         return resultObject
     }
