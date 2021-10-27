@@ -21,8 +21,9 @@ class Classifier {
         return this.parseClassifiedMessage(res, message, timeTaken)
     }
     parseClassifiedMessage = (results, message, executionTime) => {
-        let resultObject = {message: message, executionTime: {seconds: executionTime[0], milliseconds: Math.round(executionTime[1] / 1e6)}, results: {}}
+        let resultObject = {message: message, executionTime: {seconds: executionTime[0], flagged: false, milliseconds: Math.round(executionTime[1] / 1e6)}, results: {}}
         results.forEach(element => {
+            if (element.results[0].match) resultObject.flagged = true
             resultObject.results[element.label] = element.results[0].match || false
         })
         return resultObject

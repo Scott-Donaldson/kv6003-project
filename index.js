@@ -1,11 +1,12 @@
-import {Client, Intents} from 'discord.js'
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES]})
+import * as Discord from 'discord.js'
+const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES]})
 import { Classifier } from './Utils/classifier.js'
 import config from './Utils/config.js'
 
 
 let classifier = new Classifier(Classifier.defaultThreashold())
 import 'dotenv/config'
+import { MessageHandler } from './Utils/messagehandler.js'
 
 const PREFIX = config.prefix
 
@@ -36,6 +37,7 @@ client.on('messageCreate', async message => {
     }else{
         //General Message Moderation
         let res = await classifier.classifyMessage(message.content)
-        console.log(res)
+        if(!res.flagged) return
+        message.channel.send({embeds: [MessageHandler.outputResults(res, 'embed')]})
     }
 })
