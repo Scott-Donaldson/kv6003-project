@@ -29,7 +29,7 @@ class Classifier {
         return resultObject
     }
     static defaultThreashold(){
-        return 0.65
+        return 0.9
     }
 }
 
