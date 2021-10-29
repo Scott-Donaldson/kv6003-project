@@ -15,7 +15,7 @@ client.login(process.env.TOKEN)
  * Client Ready Event Listener
  */
 client.on('ready', ()=>{
-    console.log(`[ BOT ] ${client.user.username} is online!`)
+    MessageHandler.log('console',`[ BOT ] ${client.user.username} is online!`)
     client.user.setPresence({activities: [{name: "your messages", type: "WATCHING"}]})
 })
 
@@ -36,6 +36,6 @@ client.on('messageCreate', async message => {
         //General Message Moderation
         let res = await classifier.classifyMessage(message.content)
         if(!res.flagged) return
-        message.channel.send({embeds: [MessageHandler.outputResults(res, 'embed')]})
+        MessageHandler.log('channel', {embeds: [MessageHandler.outputResults(res, 'embed')]}, {channel: message.channel})
     }
 })

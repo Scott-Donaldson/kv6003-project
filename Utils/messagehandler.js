@@ -38,5 +38,28 @@ class MessageHandler{
         embed.addField("Info",`Execution Time: ${res.executionTime.seconds}s ${res.executionTime.milliseconds}ms\nMessage: ${res.message}`,true)
         return embed
     }
+    /**
+     * System Message Log Handler
+     * @param {String} type "console" | "text"
+     * @param {String} text 
+     */
+    static log(type, message, params={}){
+        switch(type.toLowerCase()){
+            default:
+            case 'console':
+                this.outputToConsole(message)
+                break
+            case 'channel':
+                if('channel' in params) this.outputToChannel(message, params.channel)
+                else throw new Error ('Cannot find channel')
+                break;
+        }
+    }
+    static outputToConsole(message){
+        console.log(message)
+    }
+    static outputToChannel(message,channel){
+        channel.send(message)
+    }
 }
 export {MessageHandler}
