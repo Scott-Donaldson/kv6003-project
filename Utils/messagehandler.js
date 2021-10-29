@@ -59,23 +59,46 @@ class MessageHandler{
                 break
         }
     }
+    /**
+     * Outputs Message to Console
+     * @param {String} message 
+     */
     static outputToConsole(message){
         console.log(message)
     }
+    /**
+     * Sends a string message to a channel
+     * @param {String} message 
+     * @param {Discord.Channel} channel 
+     */
     static outputToChannel(message,channel){
         channel.send(message)
     }
+    /**
+     * Creates a basic discord rich embed and returns the object
+     * @param {Object} params : {title: String, description: String}
+     * @returns {Discord.MessageEmbed}
+     */
     static basicEmbed(params={}){
         let embed = new Discord.MessageEmbed()
         if('title' in params) embed.setTitle(params.title)
         if('description' in params) embed.setDescription(params.description)
         return embed
     }
+    /**
+     * Edits a discord rich embed
+     * @param {Object} params : {oldMessage: Discord.Message, newMessage: Discord.MessageEmbed}
+     */
     static editEmbed(params={}){
         if(!'oldMessage' in params) throw new Error('No message to edit')
         if(!'newMessage' in params) throw new Error('No message to update')
         params.oldMessage.edit({embeds:[params.newMessage]})
     }
+    /**
+     * 
+     * @param {Object} params : {message: Discord.MessageEmbed, channel: Discord.Channel}
+     * @returns 
+     */
     static sendEmbed(params={}){
         if(!'message' in params) throw new Error('No message to send')
         if(!'channel' in params) throw new Error('No channel to send message to')

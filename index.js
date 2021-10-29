@@ -35,7 +35,6 @@ client.on('messageCreate', async message => {
         let cmd = args[0]
         cmdHandler.getCommand(cmd)?.execute({client: client, message: message, args: args})
     }else{
-        //General Message Moderation
         let res = await classifier.classifyMessage(message.content)
         if(!res.flagged) return
         MessageHandler.log('channel', {embeds: [MessageHandler.outputResults(res, 'embed')]}, {channel: message.channel})

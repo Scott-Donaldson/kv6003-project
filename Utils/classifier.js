@@ -7,14 +7,24 @@ class Classifier {
         if(isNaN(threashold)) throw new Error(`Threshold parameted must be a number! Got ${threashold} (${typeof(threashold)})`)
         this._threashold = threashold
     }
+    /**
+     * @return {float}
+     */
     get threashold(){
         return this._threashold
     }
+    /**
+     * @param {float} newThreashold
+     */
     set threashold(newThreashold){
         if(isNaN(threashold)) throw new Error(`Threshold parameted must be a number! Got ${threashold} (${typeof(threashold)})`)
         this._threashold = newThreashold
     }
-
+    /**
+     * Classifies a message with Tensorflow Toxicity Model
+     * @param {String} message 
+     * @returns {resultObject}
+     */
     classifyMessage = async message => {
         let timeTaken = process.hrtime()
         let model = await toxicmodel.load(this._threashold)
@@ -22,6 +32,13 @@ class Classifier {
         timeTaken = process.hrtime(timeTaken)
         return this.parseClassifiedMessage(res, message, timeTaken)
     }
+    /**
+     * Takes set parameters and parses them into a result object to be used in other fucntions
+     * @param {Model.Classify} results 
+     * @param {Discord.Message} message 
+     * @param {Process.hrtime} executionTime 
+     * @returns 
+     */
     parseClassifiedMessage = (results, message, executionTime) => {
         let resultObject = {message: message, executionTime: {seconds: executionTime[0], milliseconds: Math.round(executionTime[1] / 1e6)}, flagged: false ,results: {}}
         results.forEach(element => {
@@ -30,6 +47,10 @@ class Classifier {
         })
         return resultObject
     }
+    /**
+     * 
+     * @returns {float} default value for threshold
+     */
     static defaultThreashold(){
         return 0.9
     }
