@@ -18,6 +18,8 @@ class MessageHandler{
                 return this.embedParser(res)
             case 'object':
                 break
+            default:
+                throw new Error('Invalid output type')
         }
     }
     /**
@@ -26,6 +28,7 @@ class MessageHandler{
      * @returns {Discord.MessageEmbed} Discord.MessageEmbed
      */
     static embedParser(res){
+        if(!res) throw new Error('No resultsObject received')
         let embed = new Discord.MessageEmbed()
 
         let messageContent = `Message Flagged! \n`
@@ -46,13 +49,14 @@ class MessageHandler{
     static log(type, message, params={}){
         switch(type.toLowerCase()){
             default:
+                throw new Error('No log type specified')
             case 'console':
                 this.outputToConsole(message)
                 break
             case 'channel':
                 if('channel' in params) this.outputToChannel(message, params.channel)
                 else throw new Error ('Cannot find channel')
-                break;
+                break
         }
     }
     static outputToConsole(message){
@@ -60,6 +64,24 @@ class MessageHandler{
     }
     static outputToChannel(message,channel){
         channel.send(message)
+    }
+    static basicEmbed(params={}){
+        let embed = new Discord.MessageEmbed()
+        if('title' in params) embed.setTitle(params.title)
+        if('description' in params) embed.setDescription(params.description)
+        return embed
+    }
+    static editEmbed(params={}){
+        if(!'oldMessage' in params) throw new Error('No message to edit')
+        if(!'newMessage' in params) throw new Error('No message to update')
+        params.oldMessage.edit({embeds:[params.newMessage]})
+    }
+    static sendEmbed(params={}){
+        if(!'message' in params) throw new Error('No message to send')
+        if(!'channel' in params) throw new Error('No channel to send message to')
+        return new Promise(resolve => {
+            params.channel.send({embeds:[params.message]}).then(message => resolve(message))
+        })
     }
 }
 export {MessageHandler}

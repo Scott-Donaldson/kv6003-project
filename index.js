@@ -1,15 +1,17 @@
 import * as Discord from 'discord.js'
-const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES]})
 import { Classifier } from './Utils/classifier.js'
 import config from './Utils/config.js'
 import { MessageHandler } from './Utils/messagehandler.js'
 import 'dotenv/config'
+import { CommandHandler } from './Utils/commandhandler.js'
 
-
-let classifier = new Classifier(Classifier.defaultThreashold())
+const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES]})
+client.login(process.env.TOKEN)
 const PREFIX = config.prefix
 
-client.login(process.env.TOKEN)
+let classifier = new Classifier(Classifier.defaultThreashold())
+let cmdHandler = new CommandHandler()
+
 
 /**
  * Client Ready Event Listener
@@ -31,7 +33,7 @@ client.on('messageCreate', async message => {
     if(message.content.startsWith(PREFIX)){
         let args = message.content.slice(PREFIX.length).trim().split(/ +/)
         let cmd = args[0]
-        //COMMAND HANDLING
+        cmdHandler.getCommand(cmd)?.execute({client: client, message: message, args: args})
     }else{
         //General Message Moderation
         let res = await classifier.classifyMessage(message.content)

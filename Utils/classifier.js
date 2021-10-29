@@ -3,6 +3,7 @@ import * as toxicmodel from '@tensorflow-models/toxicity'
 
 class Classifier {
     constructor(threashold){
+        if(!threashold) throw new Error('No threashold found')
         if(isNaN(threashold)) throw new Error(`Threshold parameted must be a number! Got ${threashold} (${typeof(threashold)})`)
         this._threashold = threashold
     }
@@ -10,6 +11,7 @@ class Classifier {
         return this._threashold
     }
     set threashold(newThreashold){
+        if(isNaN(threashold)) throw new Error(`Threshold parameted must be a number! Got ${threashold} (${typeof(threashold)})`)
         this._threashold = newThreashold
     }
 
