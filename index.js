@@ -18,6 +18,7 @@ let cmdHandler = new CommandHandler()
  */
 client.on('ready', ()=>{
     MessageHandler.log('console',`[ BOT ] ${client.user.username} is online!`)
+    cmdHandler.loadCommands()
     client.user.setPresence({activities: [{name: "your messages", type: "WATCHING"}]})
 })
 
@@ -33,7 +34,12 @@ client.on('messageCreate', async message => {
     if(message.content.startsWith(PREFIX)){
         let args = message.content.slice(PREFIX.length).trim().split(/ +/)
         let cmd = args[0]
-        cmdHandler.getCommand(cmd)?.execute({client: client, message: message, args: args})
+        let params = {
+            client: client, 
+            message: message, 
+            args: args
+        }
+        cmdHandler.getCommand(cmd)?.execute(params)
     }else{
         let res = await classifier.classifyMessage(message.content)
         if(!res.flagged) return

@@ -5,7 +5,6 @@ import { MessageHandler } from './messagehandler.js'
 class CommandHandler{
     constructor(){
         this._commands = new Discord.Collection()
-        this.loadCommands()
     }
     /**
      * Loads commands from a Command folder in root folder
@@ -32,21 +31,11 @@ class CommandHandler{
         if(this.commandExists(name)) return this._commands.get(name)
         else return
     }
-    /**
-     * Checks if a command is in the Collection
-     * @param {String} name 
-     * @returns {Boolean}
-     */
+    getCommands = () => {
+        return this._commands
+    }
     commandExists = name => {
         return this._commands.has(name)
-    }
-    /**
-     * Reloads a command for hot reloading of commands
-     * @param {String} name 
-     */
-    reload = name => {
-        if(!this.commandExists(name)) return
-        
     }
 }
 
