@@ -29,6 +29,8 @@ class MessageHandler{
      */
     static embedParser(res){
         if(!res) throw new Error('No resultsObject received')
+        
+        if(res.message.length > 256) res.message = res.message.slice(0,256) + "..."
         let embed = new Discord.MessageEmbed()
 
         let messageContent = `Message Flagged! \n`
