@@ -7,7 +7,7 @@ import { CommandHandler } from './Utils/commandhandler.js'
 
 const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES]})
 client.login(process.env.TOKEN)
-const PREFIX = config.prefix
+const PREFIX = config.PREFIX
 
 let classifier = new Classifier(Classifier.defaultThreashold())
 let cmdHandler = new CommandHandler()
@@ -28,10 +28,11 @@ client.on('ready', ()=>{
  * Depending on if the message contains the prefix the bot will either handle the command or run the message through its classifier
  */
 client.on('messageCreate', async message => {
-    if(!config.allowedChannels.includes(message.channel.id)) return;
+    if(!config.ALLOWED_CHANNELS.includes(message.channel.id)) return;
 
     if(message.author.bot) return;
     if(message.content.startsWith(PREFIX)){
+        //Command Handler
         let args = message.content.slice(PREFIX.length).trim().split(/ +/)
         let cmd = args[0]
         let params = {
