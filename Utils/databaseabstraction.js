@@ -2,13 +2,15 @@ import Database from "./database.js";
 import config from "./config.js";
 import fs from 'fs'
 
-class DatabaseAbstraction {
+export class DatabaseAbstraction {
     constructor(){
         if(!this.doesDatabaseExist) this.createDatabaseFile()
         this.connection = new Database().getConnection()
     }
     createDatabaseFile = () => {
         fs.writeFileSync(Database.getDatabaseName())
+        this.createRequiredTables()
+        this.populateTablesWithDefaults()
     }
     doesDatabaseExist = () => {
         return fs.existsSync(config.DATABASE_CONFIG.DATABASE_FOLDER + config.DATABASE_CONFIG.DATABASE_NAME)
@@ -29,17 +31,23 @@ class DatabaseAbstraction {
 
         this.connection.exec(tableString)
     }
-
+    createRequiredTables = () => {
+        this.getTableNames.forEach( e => {
+            let a = this.findTable(e)
+            this.createTable(a.name, a.schema)
+        })
+    }
     initializeDatabase = () => {
         let tables = config.DATABASE_CONFIG.TABLES
         for(const [tableName, tableConfig] of Object.entries(tables)) this.createTable(tableConfig.name, tableConfig.schema)
     }
     populateTablesWithDefaults = () => {
-        let tables = config.DATABASE_CONFIG.TABLES
-        for(const [tableName, tableDefault] of Object.entries(tables))  return
+        this.getTableNames.forEach( e => {
+            if(this.doesTableHaveDefault(e)) this.populateTableWithDefault(e.name, e.default)
+        })
     }
-    populateTableWithDefault = tableName => {
-        // REWRITE WITH FIND TABLE
+    populateTableWithDefault = (tableName, defaults) => {
+        //REWRITE
     }
     findTable = tableName => {
         let tables = config.DATABASE_CONFIG.TABLES
@@ -48,9 +56,16 @@ class DatabaseAbstraction {
         }
 
     }
+    getTableNames = () => {
+        let tables = config.DATABASE_CONFIG.TABLES
+        let output = []
+        for(const [x, tableValues] of Object.entries(tables)) output.push(tableValues.name)
+        return output
+    }
+    doesTableHaveDefault = tableName => {
+        return ("schema" in this.findTable(tableName))
+    }
     createBackup = () => {
-
+        // Better-SQLITE3 API Documentation
     }
 }
-
-export{DatabaseAbstraction}

@@ -7,6 +7,7 @@ export default{
     "DEV_MODE": true,
     "DATABASE_CONFIG": {
         "DATABASE_FOLDER" : "./",
+        "BACKUP_FOLDER" : "./db-backups/",
         "DATABASE_NAME" : "db-zeus.db",
         "TABLES":{
             "TABLE_LOGS" : {

@@ -1,6 +1,6 @@
 import config from'./config.js'
 
-class Database {
+export class Database {
     constructor(){
         this.databaseFile = Database.getDatabaseName()
         this.connection = this.createConnection(this.databaseFile)
@@ -16,4 +16,3 @@ class Database {
         return config.DATABASE_CONFIG.DATABASE_FOLDER + config.DATABASE_CONFIG.DATABASE_NAME
     }
 }
-export {Database}
