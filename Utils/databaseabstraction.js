@@ -70,7 +70,7 @@ export class DatabaseAbstraction {
         for(const [x, tableValues] of Object.entries(tables)){
             if(tableValues.name.toLowerCase() === tableName.toLowerCase()) return tableValues
         }
-
+        return false
     }
     getTableNames = () => {
         let tables = config.DATABASE_CONFIG.TABLES
@@ -82,6 +82,9 @@ export class DatabaseAbstraction {
         return ("schema" in this.findTable(tableName))
     }
     createBackup = () => {
-        // Better-SQLITE3 API Documentation
+        let databaseName = config.DATABASE_CONFIG.DATABASE_NAME
+        let backupFolder = config.DATABASE_CONFIG.BACKUP_FOLDER
+        let backupName = `${databaseName.substring(0, databaseName.length - 3 )}-backup-${Date.now()}`
+        this.connection.backup(backupFolder + backupName)
     }
 }
