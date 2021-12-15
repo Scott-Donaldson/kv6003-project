@@ -20,16 +20,30 @@ export class DatabaseAbstraction {
         return (this.connection.prepare(sql).get({table_name: table}) > 0)
     }
     createTable = (tableName, tableColumns) => {
-        let tableString = `CREATE TABLE IF NOT EXISTS ${tableName} (`
-
-        let columns = []
-        for( const [columnName, columnType] of Object.entries(tableColumns)){
-            columns.push(`${columnName} ${columnType.toUpperCase()}`)
-        }
-
-        tableString += columns.join(", ") + ")"
-
+        let tableString = `CREATE TABLE IF NOT EXISTS ${tableName}`
+        tableString += this.generateFromSchema(tableColumns)
         this.connection.exec(tableString)
+    }
+    generateFromSchema = tableColumns => {
+        let columns = []
+        for( const [columnName, columnType] of Object.entries(tableColumns) ){
+            columns.push(`${columnName.toLowerCase} ${columnType.toUpperCase()}`)
+        }
+        return "(" + columns.join(", ") + ")"
+    }
+    generateFromSchemaWithoutType = tableColumns => {
+        let columns = []
+        for( const [columnName, columnType] of Object.entries(tableColumns) ){
+            columns.push(`${columnName.toLowerCase}`)
+        }
+        return "(" + columns.join(", ") + ")"
+    }
+    generateFromSchemaWithoutTypeWithCharPrefix = (tableColumns, charPrefix) => {
+        let columns = []
+        for( const [columnName, columnType] of Object.entries(tableColumns) ){
+            columns.push(`${charPrefix}${columnName.toLowerCase}`)
+        }
+        return "(" + columns.join(", ") + ")"
     }
     createRequiredTables = () => {
         this.getTableNames.forEach( e => {
@@ -37,17 +51,19 @@ export class DatabaseAbstraction {
             this.createTable(a.name, a.schema)
         })
     }
-    initializeDatabase = () => {
-        let tables = config.DATABASE_CONFIG.TABLES
-        for(const [tableName, tableConfig] of Object.entries(tables)) this.createTable(tableConfig.name, tableConfig.schema)
-    }
     populateTablesWithDefaults = () => {
         this.getTableNames.forEach( e => {
             if(this.doesTableHaveDefault(e)) this.populateTableWithDefault(e.name, e.default)
         })
     }
     populateTableWithDefault = (tableName, defaults) => {
-        //REWRITE
+        let sql = `INSERT INTO ${tableName} ${this.generateFromSchemaWithoutType(this.findTable(tableName).schema)} VALUES ${this.generateFromSchemaWithoutTypeWithCharPrefix(this.findTable(tableName).schema, "@")}`
+        let insert = this.connection.prepare(sql)
+
+        let populateTable = this.connection.transaction(items =>{
+            for(const item of items) insert.run(item)
+        })
+        populateTable(defaults)
     }
     findTable = tableName => {
         let tables = config.DATABASE_CONFIG.TABLES
