@@ -47,8 +47,10 @@ export class DatabaseAbstraction {
     }
     createRequiredTables = () => {
         this.getTableNames.forEach( e => {
-            let a = this.findTable(e)
-            this.createTable(a.name, a.schema)
+            if(!this.doesTableExist(e.name)){
+                let a = this.findTable(e)
+                this.createTable(a.name, a.schema)
+            }
         })
     }
     populateTablesWithDefaults = () => {
