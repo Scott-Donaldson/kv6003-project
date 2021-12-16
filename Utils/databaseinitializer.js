@@ -34,11 +34,10 @@ export default class DatabaseInitializer {
      * Creates the database file and file system defined in the config file
      */
   createDatabaseFile () {
-    if (config.DEV_MODE) MessageHandler.log('console', '[ INI ] Creating Database')
+    if (config.DEV_MODE) MessageHandler.log('console', '[ INI ] Database File Created')
     this.createDatabaseFolder()
     fs.writeFileSync(DatabaseConnection.getDatabaseName(), '', (err) => {
       if (err) throw err
-      if (config.DEV_MODE) MessageHandler.log('console', '[ INI ] Database File Created')
     })
   }
 
@@ -121,7 +120,6 @@ export default class DatabaseInitializer {
      * Creates the required tables defined in the config file
      */
   createRequiredTables () {
-    if (config.DEV_MODE) MessageHandler.log('console', '[ INI ] Creating Required Tables')
     this.getTableNames().forEach(e => {
       if (!this.doesTableExist(e)) {
         const a = this.findTable(e)
