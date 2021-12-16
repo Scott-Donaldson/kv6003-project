@@ -1,10 +1,13 @@
-import config from'./config.js'
+import config from './config.js'
 import Database from 'better-sqlite3'
 
 export default class DatabaseConnection {
-    
-    getConnection = () => new Database(DatabaseConnection.getDatabaseName())
+  getConnection () {
+    const database = new Database(DatabaseConnection.getDatabaseName())
+    return database
+  }
 
-    static getDatabaseName = () => config.DATABASE_CONFIG.DATABASE_FOLDER + config.DATABASE_CONFIG.DATABASE_NAME
-    
+  static getDatabaseName () {
+    return config.DATABASE_CONFIG.DATABASE_FOLDER + config.DATABASE_CONFIG.DATABASE_NAME
+  }
 }
