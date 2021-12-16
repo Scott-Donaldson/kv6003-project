@@ -10,7 +10,7 @@ export default{
         "REMOVE_DB_ON_START" : true
     },
     "DATABASE_CONFIG": {
-        "DATABASE_FOLDER" : "./db/",
+        "DATABASE_FOLDER" : "./Utils/db/",
         "BACKUP_FOLDER" : "./db-backups/",
         "DATABASE_NAME" : "db-zeus.db",
         "TABLES"  :{
