@@ -1,5 +1,4 @@
-import * as Discord from 'discord.js'
-import { MessageHandler } from '../Utils/messagehandler.js'
+import MessageHandler from '../Utils/messagehandler.js'
 
 let name = 'ping'
 let execute = (params = {}) => {

@@ -1,15 +1,19 @@
 import * as Discord from 'discord.js'
-import { Classifier } from './Utils/classifier.js'
+import Classifier from './Utils/classifier.js'
 import config from './Utils/config.js'
-import { MessageHandler } from './Utils/messagehandler.js'
+import MessageHandler from './Utils/messagehandler.js'
 import 'dotenv/config'
-import { CommandHandler } from './Utils/commandhandler.js'
+import CommandHandler from './Utils/commandhandler.js'
+import DatabaseAbstraction from './Utils/databaseabstraction.js'
+
+if(config.DEV_MODE) MessageHandler.log('console', "[ DEV ] Dev Mode Enabled")
 
 const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES]})
 client.login(process.env.TOKEN)
 const PREFIX = config.PREFIX
 
-let classifier = new Classifier(Classifier.defaultThreashold())
+let dba = new DatabaseAbstraction()
+let classifier = new Classifier(dba.getClassifierThreashold())
 let cmdHandler = new CommandHandler()
 
 

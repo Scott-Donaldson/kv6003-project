@@ -14,8 +14,15 @@ export default{
         "BACKUP_FOLDER" : "./db-backups/",
         "DATABASE_NAME" : "db-zeus.db",
         "TABLES"  :{
-            "TABLE_LOGS" : {
-                "name"  : "zeus-log",
+            "TABLE_SYSTEM_LOGS" : {
+                "name"  : "zeus-system-log",
+                "schema" : {
+                    "id" : "INT",
+                    "message" : "TEXT"
+                }
+            },
+            "TABLE_MESSAGE_LOGS" : {
+                "name"  : "zeus-message-log",
                 "schema" : {
                     "id" : "INT",
                     "message" : "TEXT"

@@ -1,7 +1,7 @@
 import '@tensorflow/tfjs-node'
 import * as toxicmodel from '@tensorflow-models/toxicity'
 
-class Classifier {
+export default class Classifier {
     constructor(threashold){
         if(!threashold) throw new Error('No threashold found')
         if(isNaN(threashold)) throw new Error(`Threshold parameted must be a number! Got ${threashold} (${typeof(threashold)})`)
@@ -55,5 +55,3 @@ class Classifier {
         return 0.9
     }
 }
-
-export {Classifier}

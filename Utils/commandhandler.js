@@ -1,8 +1,9 @@
 import * as Discord from 'discord.js'
 import * as fs from 'fs'
 import config from './config.js'
-import { MessageHandler } from './messagehandler.js'
-class CommandHandler{
+import MessageHandler from './messagehandler.js'
+
+export default class CommandHandler{
     constructor(){
         this._commands = new Discord.Collection()
     }
@@ -38,5 +39,3 @@ class CommandHandler{
         return this._commands.has(name)
     }
 }
-
-export{ CommandHandler }
