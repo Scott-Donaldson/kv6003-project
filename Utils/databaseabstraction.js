@@ -1,6 +1,7 @@
 import DatabaseConnection from "./databaseconnection.js";
 import config from "./config.js";
 import fs from 'fs'
+import MessageHandler from './messagehandler.js'
 
 export default class DatabaseAbstraction {
     constructor(){
@@ -11,19 +12,19 @@ export default class DatabaseAbstraction {
         this.connection = this.database.getConnection()
 
         this.createRequiredTables()
-        this.populateTablesWithDefaults()
+        //this.populateTablesWithDefaults()
     }
     removeDatabaseFiles = () => {
-        if(config.DEV_MODE) console.log("[ DEV ] Removing previous DB file")
+        if(config.DEV_MODE) MessageHandler.log('console', "[ DEV ] Removing previous DB file")
         let databaseLocation = config.DATABASE_CONFIG.DATABASE_FOLDER + config.DATABASE_CONFIG.DATABASE_NAME
         if(fs.existsSync(databaseLocation)) fs.unlinkSync(databaseLocation)
     }
     createDatabaseFile = () => {
-        if(config.DEV_MODE) console.log("[ INI ] Creating Database")
+        if(config.DEV_MODE) MessageHandler.log('console', "[ INI ] Creating Database")
         this.createDatabaseFolder()
         fs.writeFileSync(DatabaseConnection.getDatabaseName(), "", (err) => {
             if(err) throw err
-            if(config.DEV_MODE) console.log("[ INI ] Database File Created")
+            if(config.DEV_MODE) MessageHandler.log('console', "[ INI ] Database File Created")
         })
     }
     createDatabaseFolder = () => {
@@ -63,19 +64,13 @@ export default class DatabaseAbstraction {
         return " ( " + columns.join(", ") + " )"
     }
     createRequiredTables = () => {
-        if(config.DEV_MODE) console.log("[ INI ] Creating Required Tables")
+        if(config.DEV_MODE) MessageHandler.log('console', "[ INI ] Creating Required Tables")
         this.getTableNames().forEach( e => {
             if(!this.doesTableExist(e)){
                 let a = this.findTable(e)
                 this.createTable(a.name, a.schema)
+                if(this.doesTableHaveDefault(e)) this.populateTableWithDefault(a.name, a.default)
             }
-        })
-    }
-    populateTablesWithDefaults = () => {
-        if(config.DEV_MODE) console.log("[ INI ] Populating Tables with default values")
-        this.getTableNames().forEach( e => {
-            let x = this.findTable(e)
-            if(this.doesTableHaveDefault(e)) this.populateTableWithDefault(x.name, x.default)
         })
     }
     populateTableWithDefault = (tableName, defaults) => {

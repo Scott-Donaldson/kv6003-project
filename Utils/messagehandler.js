@@ -3,7 +3,7 @@ import * as Discord from 'discord.js'
  * Author W19019810
  * MessageHandler provides a bunch of static methods to parse different types of methods into specific output types
  */
-class MessageHandler{
+export default class MessageHandler{
     /**
      * Outputs results
      * Takes type
@@ -109,4 +109,3 @@ class MessageHandler{
         })
     }
 }
-export {MessageHandler}
