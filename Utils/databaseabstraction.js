@@ -21,13 +21,28 @@ export default class DatabaseAbstraction {
   }
 
   getRowCount (table) {
-    const sql = 'SELECT COUNT(*) from ?'
-    return parseInt(this.connection.prepare(sql).get(table))
+    const sql = `SELECT COUNT(*) from '${table}'`
+    const data = this.connection.prepare(sql).get()
+    const res = data[Object.keys(data)[0]]
+    return res
   }
 
   incrementCount (stat) {
     const current = this.getStatCount(stat)
-    const sql = `UPDATE ${config.DATABASE_CONFIG.TABLES.TABLE_STATS.name} SET value = ${current + 1} WHERE statistic = ?`
+    const sql = `UPDATE '${config.DATABASE_CONFIG.TABLES.TABLE_STATS.name}' SET value = ${current + 1} WHERE statistic = ?`
     this.connection.prepare(sql).run(stat)
+  }
+
+  logUserMessage (message) {
+    const sql = `INSERT INTO '${config.DATABASE_CONFIG.TABLES.TABLE_MESSAGE_LOGS.name}' VALUES ${this.dbm.getDBI().generateFromSchemaWithoutTypeWithCharPrefix(config.DATABASE_CONFIG.TABLES.TABLE_MESSAGE_LOGS.schema, '@')}`
+    const statement = this.connection.prepare(sql)
+    statement.run({
+      id: this.getRowCount(config.DATABASE_CONFIG.TABLES.TABLE_MESSAGE_LOGS.name) + 1,
+      message: message
+    })
+  }
+
+  logSystemMessage (type, message) {
+
   }
 }

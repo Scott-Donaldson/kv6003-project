@@ -43,12 +43,16 @@ client.on('messageCreate', async message => {
     const params = {
       client: client,
       message: message,
-      args: args
+      args: args,
+      database: dba
     }
     cmdHandler.getCommand(cmd)?.execute(params)
   } else {
+    dba.incrementCount('messages_checked')
     const res = await classifier.classifyMessage(message.content)
     if (!res.flagged) return
+    dba.incrementCount('messages_flagged')
+    dba.logUserMessage(message.content)
     MessageHandler.log('channel', { embeds: [MessageHandler.outputResults(res, 'embed')] }, { channel: message.channel })
   }
 })
