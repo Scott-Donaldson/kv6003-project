@@ -5,7 +5,7 @@ export default class Classifier {
   constructor (threashold) {
     if (!threashold) throw new Error('No threashold found')
     if (isNaN(threashold)) throw new Error(`Threshold parameted must be a number! Got ${threashold} (${typeof (threashold)})`)
-    this._threashold = threashold
+    this._threashold = threashold / 10
   }
 
   /**
@@ -20,7 +20,7 @@ export default class Classifier {
      */
   set threashold (newThreashold) {
     if (isNaN(newThreashold)) throw new Error(`Threshold parameted must be a number! Got ${newThreashold} (${typeof (newThreashold)})`)
-    this._threashold = newThreashold
+    this._threashold = newThreashold / 10
   }
 
   /**

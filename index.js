@@ -22,9 +22,10 @@ const cmdHandler = new CommandHandler()
  * Client Ready Event Listener
  */
 client.on('ready', () => {
-  MessageHandler.log('console', `[ BOT ] ${client.user.username} is online!`)
   cmdHandler.loadCommands()
   client.user.setPresence({ activities: [{ name: 'your messages', type: 'WATCHING' }] })
+  MessageHandler.log('console', `[ BOT ] ${client.user.username}#${client.user.discriminator} is online!`)
+  dba.logSystemMessage('STARTUP', 'Bot started')
 })
 
 /**
@@ -52,7 +53,7 @@ client.on('messageCreate', async message => {
     const res = await classifier.classifyMessage(message.content)
     if (!res.flagged) return
     dba.incrementCount('messages_flagged')
-    dba.logUserMessage(message.content, message.author.id)
+    dba.logUserMessage(message.content, message.author.id, message.createdAt.toISOString())
     MessageHandler.log('channel', { embeds: [MessageHandler.outputResults(res, 'embed')] }, { channel: message.channel })
   }
 })

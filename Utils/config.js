@@ -7,7 +7,8 @@ export default {
   ALLOWED_CHANNELS: ['902198800624521257', '902198909676441680', '915558303189327882'],
   DEV_MODE: true,
   DEV_OPTIONS: {
-    REMOVE_DB_ON_START: true
+    REMOVE_DB_ON_START: true,
+    IGNORE_PERMISSIONS: false
   },
   DATABASE_CONFIG: {
     DATABASE_FOLDER: './Utils/db/',
@@ -19,38 +20,38 @@ export default {
         schema: {
           id: 'INT',
           type: 'TEXT',
-          message: 'TEXT'
-        },
-        default: [
-          { id: 1, type: 'INFO', message: 'Database created and populated' }
-        ]
+          message: 'TEXT',
+          timestamp: 'TEXT'
+        }
       },
       TABLE_MESSAGE_LOGS: {
         name: 'zeus-message-log',
         schema: {
           id: 'INT',
-          uid: "TEXT",
-          message: 'TEXT'
+          uid: 'TEXT',
+          message: 'TEXT',
+          timestamp: 'TEXT'
         }
       },
       TABLE_CONFIG: {
         name: 'zeus-config',
         schema: {
           name: 'TEXT',
-          value: 'TEXT'
+          value: 'INT'
         },
         default: [
-          { name: 'threashold', value: '0.6' }
+          { name: 'threashold', value: 6 },
+          { name: 'bot_actions', value: 0x00 }
         ]
       },
       TABLE_PERMMISSIONS: {
         name: 'zeus-permissions',
         schema: {
-          id: 'TEXT',
+          uid: 'TEXT',
           value: 'INT'
         },
         default: [
-          { id: '148530891679858688', value: 4 }
+          { uid: '148530891679858688', value: 4 }
         ]
       },
       TABLE_BYPASSES: {
@@ -69,6 +70,19 @@ export default {
         default: [
           { statistic: 'messages_flagged', value: 0 },
           { statistic: 'messages_checked', value: 0 }
+        ]
+      },
+      TABLE_ACTIONS: {
+        name: 'zeus-actions',
+        schema: {
+          id: 'INT',
+          flag: 'INT',
+          name: 'TEXT'
+        },
+        default: [
+          { id: 0, flag: 0x1, name: 'ALERT' },
+          { id: 1, flag: 0x2, name: 'WARN' },
+          { id: 2, flag: 0x4, name: 'REMOVE' }
         ]
       }
     }

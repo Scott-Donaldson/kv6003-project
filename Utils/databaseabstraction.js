@@ -33,17 +33,26 @@ export default class DatabaseAbstraction {
     this.connection.prepare(sql).run(stat)
   }
 
-  logUserMessage (message, uid) {
+  logUserMessage (message, uid, timestampISO) {
     const sql = `INSERT INTO '${config.DATABASE_CONFIG.TABLES.TABLE_MESSAGE_LOGS.name}' VALUES ${this.dbm.getDBI().generateFromSchemaWithoutTypeWithCharPrefix(config.DATABASE_CONFIG.TABLES.TABLE_MESSAGE_LOGS.schema, '@')}`
     const statement = this.connection.prepare(sql)
     statement.run({
       id: this.getRowCount(config.DATABASE_CONFIG.TABLES.TABLE_MESSAGE_LOGS.name) + 1,
       uid: uid,
-      message: message
+      message: message,
+      timestamp: timestampISO
     })
   }
 
   logSystemMessage (type, message) {
-
+    const sql = `INSERT INTO '${config.DATABASE_CONFIG.TABLES.TABLE_SYSTEM_LOGS.name}' VALUES ${this.dbm.getDBI().generateFromSchemaWithoutTypeWithCharPrefix(config.DATABASE_CONFIG.TABLES.TABLE_SYSTEM_LOGS.schema, '@')}`
+    const statement = this.connection.prepare(sql)
+    const timestamp = new Date()
+    statement.run({
+      id: this.getRowCount(config.DATABASE_CONFIG.TABLES.TABLE_SYSTEM_LOGS.name) + 1,
+      type: type.toUpperCase(),
+      message: message,
+      timestamp: timestamp.toISOString()
+    })
   }
 }
