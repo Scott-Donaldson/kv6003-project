@@ -6,7 +6,12 @@ export default class DatabaseAbstraction {
     constructor(){
         if(config.DEV_OPTIONS.REMOVE_DB_ON_START) this.removeDatabaseFiles()
         if(!this.doesDatabaseExist()) this.createDatabaseFile()
-        this.connection = new DatabaseConnection().getConnection()
+
+        this.database = new DatabaseConnection()
+        this.connection = this.database.getConnection()
+
+        this.createRequiredTables()
+        this.populateTablesWithDefaults()
     }
     removeDatabaseFiles = () => {
         if(config.DEV_MODE) console.log("[ DEV ] Removing previous DB file")
@@ -20,8 +25,6 @@ export default class DatabaseAbstraction {
             if(err) throw err
             if(config.DEV_MODE) console.log("[ INI ] Database File Created")
         })
-        this.createRequiredTables()
-        this.populateTablesWithDefaults()
     }
     createDatabaseFolder = () => {
         if(!fs.existsSync(config.DATABASE_CONFIG.DATABASE_FOLDER)) fs.mkdirSync(config.DATABASE_CONFIG.DATABASE_FOLDER)
@@ -30,12 +33,13 @@ export default class DatabaseAbstraction {
         return fs.existsSync(config.DATABASE_CONFIG.DATABASE_FOLDER + config.DATABASE_CONFIG.DATABASE_NAME)
     }
     doesTableExist = table => {
-        let sql = "SELECT count(*) from sqlite_master WHERE type = 'table' AND name = :table_name"
+        let sql = "SELECT count(*) from sqlite_master WHERE type = 'table' AND name = ':table_name'"
         return (this.connection.prepare(sql).get({table_name: table}) > 0)
     }
     createTable = (tableName, tableColumns) => {
         let tableString = `CREATE TABLE IF NOT EXISTS ${tableName}`
         tableString += this.generateFromSchema(tableColumns)
+        console.log(tableString)
         this.connection.exec(tableString)
     }
     generateFromSchema = tableColumns => {
@@ -63,7 +67,7 @@ export default class DatabaseAbstraction {
         if(config.DEV_MODE) console.log("[ INI ] Creating Required Tables")
         let tableNames = this.getTableNames()
         tableNames.forEach( e => {
-            if(!this.doesTableExist(e.name)){
+            if(!this.doesTableExist(e)){
                 let a = this.findTable(e)
                 this.createTable(a.name, a.schema)
             }
