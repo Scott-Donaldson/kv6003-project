@@ -4,8 +4,14 @@ import fs from 'fs'
 
 export default class DatabaseAbstraction {
     constructor(){
+        if(config.DEV_OPTIONS.REMOVE_DB_ON_START) this.removeDatabaseFiles()
         if(!this.doesDatabaseExist()) this.createDatabaseFile()
         this.connection = new DatabaseConnection().getConnection()
+    }
+    removeDatabaseFiles = () => {
+        if(config.DEV_MODE) console.log("[ DEV ] Removing previous DB file")
+        let databaseLocation = config.DATABASE_CONFIG.DATABASE_FOLDER + config.DATABASE_CONFIG.DATABASE_NAME
+        if(fs.existsSync(databaseLocation)) fs.unlinkSync(databaseLocation)
     }
     createDatabaseFile = () => {
         if(config.DEV_MODE) console.log("[ INI ] Creating Database")

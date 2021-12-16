@@ -6,6 +6,9 @@ export default{
     "PREFIX": ">",
     "ALLOWED_CHANNELS": ["902198800624521257","902198909676441680","915558303189327882"],
     "DEV_MODE": true,
+    "DEV_OPTIONS": {
+        "REMOVE_DB_ON_START" : true
+    },
     "DATABASE_CONFIG": {
         "DATABASE_FOLDER" : "./db/",
         "BACKUP_FOLDER" : "./db-backups/",

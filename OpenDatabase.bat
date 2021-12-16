@@ -1,0 +1,1 @@
+sqlite3 ./Utils/db/db-zeus.db
