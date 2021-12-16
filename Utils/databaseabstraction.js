@@ -12,7 +12,6 @@ export default class DatabaseAbstraction {
         this.connection = this.database.getConnection()
 
         this.createRequiredTables()
-        //this.populateTablesWithDefaults()
     }
     removeDatabaseFiles = () => {
         if(config.DEV_MODE) MessageHandler.log('console', "[ DEV ] Removing previous DB file")
