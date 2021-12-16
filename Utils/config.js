@@ -23,11 +23,13 @@ export default{
             "TABLE_CONFIG" : {
                 "name": "zeus-config",
                 "schema": {
-                    "id":"INT"
+                    "name":"TEXT",
+                    "value":"TEXT"
                 },
-                "default":{
-                    "id":"INT"
-                }
+                "default":[
+                    {"name" : "a", "value": "abc"},
+                    {"name" : "x", "value": "xyz"}
+                ]
             },
             "TABLE_PERMMISSIONS" : {
                 "name":"zeus-permissions",
