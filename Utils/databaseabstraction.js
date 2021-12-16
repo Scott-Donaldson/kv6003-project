@@ -1,6 +1,9 @@
 import config from "./config.js";
 import DatabaseInitializer from "./databaseinitializer.js";
-
+/**
+ * @todo
+ * create DatabaseManager Class that handles backups and the DatabaseInitializer Class
+ */
 export default class DatabaseAbstraction {
     constructor(){
         this.dbi = new DatabaseInitializer()
