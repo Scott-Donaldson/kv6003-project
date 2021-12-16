@@ -33,11 +33,12 @@ export default class DatabaseAbstraction {
     this.connection.prepare(sql).run(stat)
   }
 
-  logUserMessage (message) {
+  logUserMessage (message, uid) {
     const sql = `INSERT INTO '${config.DATABASE_CONFIG.TABLES.TABLE_MESSAGE_LOGS.name}' VALUES ${this.dbm.getDBI().generateFromSchemaWithoutTypeWithCharPrefix(config.DATABASE_CONFIG.TABLES.TABLE_MESSAGE_LOGS.schema, '@')}`
     const statement = this.connection.prepare(sql)
     statement.run({
       id: this.getRowCount(config.DATABASE_CONFIG.TABLES.TABLE_MESSAGE_LOGS.name) + 1,
+      uid: uid,
       message: message
     })
   }

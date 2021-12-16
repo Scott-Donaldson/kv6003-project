@@ -52,7 +52,7 @@ client.on('messageCreate', async message => {
     const res = await classifier.classifyMessage(message.content)
     if (!res.flagged) return
     dba.incrementCount('messages_flagged')
-    dba.logUserMessage(message.content)
+    dba.logUserMessage(message.content, message.author.id)
     MessageHandler.log('channel', { embeds: [MessageHandler.outputResults(res, 'embed')] }, { channel: message.channel })
   }
 })

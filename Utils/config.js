@@ -29,6 +29,7 @@ export default {
         name: 'zeus-message-log',
         schema: {
           id: 'INT',
+          uid: "TEXT",
           message: 'TEXT'
         }
       },
