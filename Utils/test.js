@@ -1,4 +1,4 @@
-import config from './config.js'
+import DatabaseAbstraction from './databaseabstraction.js'
 // const populateTableWithDefault = tableName => {
 //     console.log(findTable(tableName))
 //     // let table = config.DATABASE_CONFIG.TABLES[tableName].name
@@ -13,25 +13,5 @@ import config from './config.js'
 //     // insertDefaults(defaults)
 // }
 
-const findTable = tableName => {
-    let tables = config.DATABASE_CONFIG.TABLES
-    let found = null
-    Object.entries(tables).forEach( e => {
-        if(e[1].name == tableName) {
-            found = e[1]
-        }
-    })
-    return found
-}
 
-const table1 = tableName => {
-    let tables = config.DATABASE_CONFIG.TABLES
-    for(const [x, tableValues] of Object.entries(tables)){
-        if(tableValues.name.toLowerCase() === tableName.toLowerCase()) return tableValues
-    }
-}
-
-//populateTableWithDefault("zeus-config")
-
-console.log(table1("zeus-config"))
-
+let db = new DatabaseAbstraction()

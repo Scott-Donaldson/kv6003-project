@@ -1,16 +1,24 @@
-import Database from "./database.js";
+import DatabaseConnection from "./databaseconnection.js";
 import config from "./config.js";
 import fs from 'fs'
 
-export class DatabaseAbstraction {
+export default class DatabaseAbstraction {
     constructor(){
-        if(!this.doesDatabaseExist) this.createDatabaseFile()
-        this.connection = new Database().getConnection()
+        if(!this.doesDatabaseExist()) this.createDatabaseFile()
+        this.connection = new DatabaseConnection().getConnection()
     }
     createDatabaseFile = () => {
-        fs.writeFileSync(Database.getDatabaseName())
+        if(config.DEV_MODE) console.log("[ INI ] Creating Database")
+        this.createDatabaseFolder()
+        fs.writeFileSync(DatabaseConnection.getDatabaseName(), "", (err) => {
+            if(err) throw err
+            if(config.DEV_MODE) console.log("[ INI ] Database File Created")
+        })
         this.createRequiredTables()
         this.populateTablesWithDefaults()
+    }
+    createDatabaseFolder = () => {
+        if(!fs.existsSync(config.DATABASE_CONFIG.DATABASE_FOLDER)) fs.mkdirSync(config.DATABASE_CONFIG.DATABASE_FOLDER)
     }
     doesDatabaseExist = () => {
         return fs.existsSync(config.DATABASE_CONFIG.DATABASE_FOLDER + config.DATABASE_CONFIG.DATABASE_NAME)
@@ -46,7 +54,9 @@ export class DatabaseAbstraction {
         return "(" + columns.join(", ") + ")"
     }
     createRequiredTables = () => {
-        this.getTableNames.forEach( e => {
+        if(config.DEV_MODE) console.log("[ INI ] Creating Required Tables")
+        let tableNames = this.getTableNames()
+        tableNames.forEach( e => {
             if(!this.doesTableExist(e.name)){
                 let a = this.findTable(e)
                 this.createTable(a.name, a.schema)
@@ -54,6 +64,7 @@ export class DatabaseAbstraction {
         })
     }
     populateTablesWithDefaults = () => {
+        if(config.DEV_MODE) console.log("[ INI ] Populating Tables with default values")
         this.getTableNames.forEach( e => {
             if(this.doesTableHaveDefault(e)) this.populateTableWithDefault(e.name, e.default)
         })
