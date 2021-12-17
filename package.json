@@ -1,21 +1,23 @@
 {
   "name": "zeus",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "zeus is a AI driven moderation bot for discord",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "standard --fix && node .",
+    "fix" : "standard --fix"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Scott-Donaldson/kv6003-project.git"
+    "url": "git+https://github.com/scrub-dev/kv6003-project.git"
   },
-  "author": "",
+  "author": "Scott Donaldson",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Scott-Donaldson/kv6003-project/issues"
+    "url": "https://github.com/scrub-dev//kv6003-project/issues"
   },
-  "homepage": "https://github.com/Scott-Donaldson/kv6003-project#readme",
+  "homepage": "https://github.com/scrub-dev//kv6003-project#readme",
   "dependencies": {
     "@tensorflow-models/toxicity": "^1.2.2",
     "@tensorflow/tfjs": "^3.10.0",

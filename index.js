@@ -7,7 +7,7 @@ import CommandHandler from './Utils/commandhandler.js'
 import DatabaseAbstraction from './Utils/databaseabstraction.js'
 import figlet from 'figlet'
 
-MessageHandler.log('console', figlet.textSync(config.BOTNAME))
+MessageHandler.log('console', figlet.textSync(config.BOTNAME) + ` v${config.VERSION}`)
 if (config.DEV_MODE) MessageHandler.log('console', '[ DEV ] Dev Mode Enabled')
 
 const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES] })

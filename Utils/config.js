@@ -1,8 +1,12 @@
+import fs from 'fs'
+const pkg = JSON.parse(fs.readFileSync('./package.json'))
+
 export default {
   /**
      * Stores the config options (Could have used JSON but not ES6 Import compatible)
      */
   BOTNAME: 'Zeus Bot',
+  VERSION: process.env.npm_package_version || pkg.version,
   PREFIX: '>',
   ALLOWED_CHANNELS: ['902198800624521257', '902198909676441680', '915558303189327882'],
   DEV_MODE: true,
