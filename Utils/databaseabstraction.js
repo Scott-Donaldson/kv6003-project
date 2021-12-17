@@ -55,4 +55,45 @@ export default class DatabaseAbstraction {
       timestamp: timestamp.toISOString()
     })
   }
+
+  getUserPermissionLevel (uid) {
+    const sql = `SELECT value FROM ${config.DATABASE_CONFIG.TABLES.TABLE_PERMMISSIONS.name} WHERE uid = ?`
+    return parseInt(this.connection.prepare(sql).get(uid).value)
+  }
+
+  setUserPemissions (uid, permissionLevel) {
+    const sql = `UPDATE ${config.DATABASE_CONFIG.TABLES.TABLE_PERMMISSIONS.name} SET value = @value WHERE uid = @uid`
+    const statement = this.connection.prepare(sql)
+    statement.run({
+      uid: uid,
+      value: permissionLevel
+    })
+  }
+
+  booleanParse (value) {
+    return !!value
+  }
+
+  booleanToInt (bool) {
+    return (bool) ? 1 : 0
+  }
+
+  getConfigOption (configOption) {
+    const sql = `SELECT value FROM ${config.DATABASE_CONFIG.TABLES.TABLE_CONFIG.name} WHERE name = @name`
+    return parseInt(this.connection.prepare(sql).get(configOption).value)
+  }
+
+  setConfigOption (configOption, newValue) {
+    const sql = `UPDATE ${config.DATABASE_CONFIG.TABLES.TABLE_CONFIG.name} SET value = @value WHERE name = @name`
+    const statement = this.connection.prepare(sql)
+    statement.run({
+      name: configOption,
+      value: newValue
+    })
+  }
+
+  toggleConfigOption (configOption) {
+    const currentVal = this.getConfigOption(configOption)
+    this.setConfigOption(configOption, this.booleanToInt(this.booleanParse(currentVal)))
+  }
 }
