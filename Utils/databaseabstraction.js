@@ -1,3 +1,4 @@
+import Classifier from './classifier.js'
 import config from './config.js'
 import DatabaseManager from './databasemanager.js'
 /**
@@ -12,7 +13,8 @@ export default class DatabaseAbstraction {
 
   getClassifierThreashold () {
     const sql = `SELECT value FROM '${config.DATABASE_CONFIG.TABLES.TABLE_CONFIG.name}' WHERE name = ?`
-    return parseFloat(this.connection.prepare(sql).get('threashold').value)
+    const res = parseFloat(this.connection.prepare(sql).get('threashold').value) || Classifier.defaultThreashold()
+    return res
   }
 
   getStatCount (stat) {
@@ -95,5 +97,15 @@ export default class DatabaseAbstraction {
   toggleConfigOption (configOption) {
     const currentVal = this.getConfigOption(configOption)
     this.setConfigOption(configOption, this.booleanToInt(this.booleanParse(currentVal)))
+  }
+
+  getUsersMessagesFromLog (uid) {
+    const sql = `SELECT message, timestamp FROM '${config.DATABASE_CONFIG.TABLES.TABLE_MESSAGE_LOGS.name}' WHERE uid = ?`
+    return this.connection.prepare(sql).get(uid)
+  }
+
+  getSystemLogMessages () {
+    const sql = `SELECT message, timestamp, type FROM '${config.DATABASE_CONFIG.TABLES.TABLE_SYSTEM_LOGS.name}'`
+    return this.connection.prepare(sql)
   }
 }

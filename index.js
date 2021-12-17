@@ -6,6 +6,7 @@ import 'dotenv/config'
 import CommandHandler from './Utils/commandhandler.js'
 import DatabaseAbstraction from './Utils/databaseabstraction.js'
 import figlet from 'figlet'
+import PermissionManager from './Utils/permissionamanger.js'
 
 MessageHandler.log('console', figlet.textSync(config.BOTNAME) + ` v${config.VERSION}`)
 if (config.DEV_MODE) MessageHandler.log('console', '[ DEV ] Dev Mode Enabled')
@@ -17,6 +18,7 @@ const PREFIX = config.PREFIX
 const dba = new DatabaseAbstraction()
 const classifier = new Classifier(dba.getClassifierThreashold())
 const cmdHandler = new CommandHandler()
+const permManager = new PermissionManager(dba)
 
 /**
  * Client Ready Event Listener
@@ -45,7 +47,8 @@ client.on('messageCreate', async message => {
       client: client,
       message: message,
       args: args,
-      database: dba
+      dba: dba,
+      pm: permManager
     }
     cmdHandler.getCommand(cmd)?.execute(params)
   } else {

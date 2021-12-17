@@ -14,7 +14,7 @@ export default class CommandHandler {
   loadCommands () {
     const commandFiles = fs.readdirSync('./Commands').filter(f => f.endsWith('.js'))
     commandFiles.forEach((e, i) => {
-      if (config.DEV_MODE) MessageHandler.log('console', `[ BOT ] ${i + 1}/${commandFiles.length} | ${e} Loaded`)
+      if (config.DEV_MODE) MessageHandler.log('console', `[ INI ] ${i + 1}/${commandFiles.length} | ${e} Loaded`)
       import(`../Commands/${e}`).then(cmd => this.commands.set(cmd.name, cmd))
     })
   }
