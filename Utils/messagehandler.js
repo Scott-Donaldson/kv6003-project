@@ -115,4 +115,61 @@ export default class MessageHandler {
       params.channel.send({ embeds: [params.message] }).then(message => resolve(message))
     })
   }
+
+  static logParser (logEntries) {
+    return (logEntries.length <= 0) ? ['No Entries'] : logEntries
+  }
+
+  static generatePaginationEmbeds (params = {}) {
+    const entriesPerPage = 10
+    const totalPages = Math.ceil(params.entries.length / entriesPerPage)
+  }
+
+  static paginationEmbedHandler (params = {}) {
+    const emojiNext = '➡'
+    const emojiPrev = '⬅'
+    const allowedReactions = [emojiPrev, emojiNext]
+    const embeds = this.generatePaginationEmbeds()
+    const timeoutTime = 30 * 1000
+    const getEmbed = i => {
+      return embeds[i]
+    }
+    const filter = (reaction, user) => { return (!user.bot) && (allowedReactions.includes(reaction.emoji.name)) }
+
+    const onCollect = (emoji, message, page, getEmbed) => {
+      if (page < 0) page = 0
+      if (page > embeds.length - 1) page = embeds.length - 1
+
+      if (emoji.name === emojiPrev) {
+        const embed = getEmbed( page - 1)
+        if(embed !== undefined){
+          message.edit({embeds : [getEmbed(--page)]})
+        }
+      } else if (emoji.name === emojiNext) {
+        const embed = getEmbed( page + 1)
+        if(embed !== undefined){
+          message.edit({embeds : [getEmbed(++page)]})
+        }
+      }
+      return page
+    }
+
+    const createCollectorMessage = (message, getEmbed) => {
+      let page = 0
+      const collector = message.createReactionCollector({ filter, time: timeoutTime })
+      collector.on('collect', async (r, u) => {
+        page = onCollect(r.emoji, message, page, getEmbed)
+        r.users.remove(u.id)
+      })
+    }
+
+    const sendPaginationMessage = (channel, getEmbed) => {
+      channel.send({ embeds: [getEmbed(0)] })
+        .then(msg => msg.react(emojiPrev))
+        .then(msgReaction => msgReaction.message.react(emojiNext))
+        .then(msgReaction => createCollectorMessage(msgReaction.message, getEmbed))
+    }
+
+    sendPaginationMessage(params.channel, getEmbed)
+  }
 }

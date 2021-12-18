@@ -11,7 +11,7 @@ import PermissionManager from './Utils/permissionamanger.js'
 MessageHandler.log('console', figlet.textSync(config.BOTNAME) + ` v${config.VERSION}`)
 if (config.DEV_MODE) MessageHandler.log('console', '[ DEV ] Dev Mode Enabled')
 
-const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES] })
+const client = new Discord.Client({ intents: [Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES, Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS] })
 client.login(process.env.TOKEN)
 const PREFIX = config.PREFIX
 

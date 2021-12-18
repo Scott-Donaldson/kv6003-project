@@ -1,10 +1,7 @@
 import MessageHandler from '../Utils/messagehandler.js'
-import LogParser from '../Utils/logparser.js'
 
 const name = 'viewlogs'
 const execute = (params = {}) => {
-  let messages = []
-
   if (params.args.length < 2) {
     // Make this error more user friendly
     MessageHandler.outputToChannel('missing arguments', params.message.channel)
@@ -18,13 +15,13 @@ const execute = (params = {}) => {
   // X log entries per page, generate multiple embeds with different title
   // When User clicks next, goes to next embed in array, updating embed id like ping command
   // Please dont forget this in the morning >:( this could be really cool.
-  if (params.args[1].toLowerCase() === 'system') {
-    messages = params.dba.getSystemLogMessages()
-  } else {
-    const uid = params.args[1]
-    messages = params.dba.getUsersMessagesFromLog(uid)
-  }
-  LogParser.messageCountOutput(messages)
+  // if (params.args[1].toLowerCase() === 'system') {
+  //   messages = params.dba.getSystemLogMessages()
+  // } else {
+  //   const uid = params.args[1]
+  //   messages = params.dba.getUsersMessagesFromLog(uid)
+  // }
+  MessageHandler.paginationEmbedHandler({ channel: params.message.channel })
 }
 
 export { name, execute }
