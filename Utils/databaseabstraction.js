@@ -101,11 +101,11 @@ export default class DatabaseAbstraction {
 
   getUsersMessagesFromLog (uid) {
     const sql = `SELECT message, timestamp FROM '${config.DATABASE_CONFIG.TABLES.TABLE_MESSAGE_LOGS.name}' WHERE uid = ?`
-    return this.connection.prepare(sql).get(uid)
+    return this.connection.prepare(sql).all(uid)
   }
 
   getSystemLogMessages () {
     const sql = `SELECT message, timestamp, type FROM '${config.DATABASE_CONFIG.TABLES.TABLE_SYSTEM_LOGS.name}'`
-    return this.connection.prepare(sql)
+    return this.connection.prepare(sql).all()
   }
 }
