@@ -118,21 +118,31 @@ export default class MessageHandler {
     })
   }
 
-  static logParser (logEntries) {
-    return (logEntries.length <= 0) ? ['No Entries'] : logEntries
+  static totalPageHelper (logEntries) {
+    if (logEntries.length === 0) return 1
+    else return logEntries.length
+  }
+
+  static logToStr (logEntries) {
+    const logs = (logEntries.length > 0) ? logEntries : [{ message: 'No Entries' }]
+    let logString = ''
+    logs.forEach(e => {
+      for (const [logParam, logMessage] of Object.entries(e)) logString += `**${logParam}:** ${logMessage}\n`
+    })
+    return logString + '\n\n'
   }
 
   static generatePaginationEmbeds (params = {}) {
-    const entriesPerPage = 10
-    const totalPages = Math.ceil(params.entries.length / entriesPerPage)
-    let page = 0
+    const entriesPerPage = 5
+    const totalPages = Math.ceil(this.totalPageHelper(params.entries) / entriesPerPage)
+    let page = 1
     const embeds = []
     while (page <= totalPages) {
-      const start = page
       const end = page * entriesPerPage
+      const start = end - entriesPerPage
       const pageEntries = params.entries.slice(start, end)
       const title = `${params.title} Logs`
-      const description = `${pageEntries.join('\n')}`
+      const description = `${this.logToStr(pageEntries)}`
       const footer = `Page ${page} of ${totalPages}`
       embeds.push(this.basicEmbed({
         title: title,
@@ -148,18 +158,19 @@ export default class MessageHandler {
   static paginationEmbedHandler (params = {}) {
     const emojiNext = '➡'
     const emojiPrev = '⬅'
-    const allowedReactions = [emojiPrev, emojiNext]
+    const emojiStop = '🛑'
+    const allowedReactions = [emojiPrev, emojiNext, emojiStop]
     const embeds = this.generatePaginationEmbeds({
       title: params.title,
       entries: params.entries
     })
-    const timeoutTime = 30 * 1000
+    const timeoutTime = 1000 * 60 * 60 // 1 Hour Timeout
     const getEmbed = i => {
       return embeds[i]
     }
-    const filter = (reaction, user) => { return (!user.bot) && (allowedReactions.includes(reaction.emoji.name)) }
+    const filter = (reaction, user) => { return (!user.bot) && (allowedReactions.includes(reaction.emoji.name)) && (user.id === params.invokerUid) }
 
-    const onCollect = (emoji, message, page, getEmbed) => {
+    const onCollect = (emoji, message, page, getEmbed, collector) => {
       if (page < 0) page = 0
       if (page > embeds.length - 1) page = embeds.length - 1
 
@@ -173,6 +184,8 @@ export default class MessageHandler {
         if (embed !== undefined) {
           message.edit({ embeds: [getEmbed(++page)] })
         }
+      } else if (emoji.name === emojiStop) {
+        collector.stop()
       }
       return page
     }
@@ -181,8 +194,12 @@ export default class MessageHandler {
       let page = 0
       const collector = message.createReactionCollector({ filter, time: timeoutTime })
       collector.on('collect', async (r, u) => {
-        page = onCollect(r.emoji, message, page, getEmbed)
-        r.users.remove(u.id)
+        page = onCollect(r.emoji, message, page, getEmbed, collector)
+        if(r.emoji.name !== emojiStop ) r.users.remove(u.id)
+      })
+
+      collector.on('end', () => {
+        message.delete()
       })
     }
 
@@ -190,6 +207,7 @@ export default class MessageHandler {
       channel.send({ embeds: [getEmbed(0)] })
         .then(msg => msg.react(emojiPrev))
         .then(msgReaction => msgReaction.message.react(emojiNext))
+        .then(msgReaction => msgReaction.message.react(emojiStop))
         .then(msgReaction => createCollectorMessage(msgReaction.message, getEmbed))
     }
 
