@@ -90,6 +90,8 @@ export default class MessageHandler {
     const embed = new Discord.MessageEmbed()
     if ('title' in params) embed.setTitle(params.title)
     if ('description' in params) embed.setDescription(params.description)
+    if ('footer' in params) embed.setFooter(params.footer)
+    if ('timestamp' in params && params.timestamp === true) embed.setTimestamp()
     return embed
   }
 
@@ -123,13 +125,34 @@ export default class MessageHandler {
   static generatePaginationEmbeds (params = {}) {
     const entriesPerPage = 10
     const totalPages = Math.ceil(params.entries.length / entriesPerPage)
+    let page = 0
+    const embeds = []
+    while (page <= totalPages) {
+      const start = page
+      const end = page * entriesPerPage
+      const pageEntries = params.entries.slice(start, end)
+      const title = `${params.title} Logs`
+      const description = `${pageEntries.join('\n')}`
+      const footer = `Page ${page} of ${totalPages}`
+      embeds.push(this.basicEmbed({
+        title: title,
+        description: description,
+        footer: footer,
+        timestamp: true
+      }))
+      page++
+    }
+    return embeds
   }
 
   static paginationEmbedHandler (params = {}) {
     const emojiNext = '➡'
     const emojiPrev = '⬅'
     const allowedReactions = [emojiPrev, emojiNext]
-    const embeds = this.generatePaginationEmbeds()
+    const embeds = this.generatePaginationEmbeds({
+      title: params.title,
+      entries: params.entries
+    })
     const timeoutTime = 30 * 1000
     const getEmbed = i => {
       return embeds[i]
@@ -141,14 +164,14 @@ export default class MessageHandler {
       if (page > embeds.length - 1) page = embeds.length - 1
 
       if (emoji.name === emojiPrev) {
-        const embed = getEmbed( page - 1)
-        if(embed !== undefined){
-          message.edit({embeds : [getEmbed(--page)]})
+        const embed = getEmbed(page - 1)
+        if (embed !== undefined) {
+          message.edit({ embeds: [getEmbed(--page)] })
         }
       } else if (emoji.name === emojiNext) {
-        const embed = getEmbed( page + 1)
-        if(embed !== undefined){
-          message.edit({embeds : [getEmbed(++page)]})
+        const embed = getEmbed(page + 1)
+        if (embed !== undefined) {
+          message.edit({ embeds: [getEmbed(++page)] })
         }
       }
       return page
