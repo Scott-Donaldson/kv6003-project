@@ -90,5 +90,11 @@ export default {
         ]
       }
     }
+  },
+  CHANNELS: {
+    LOG_CHANNEL: '915558303189327882'
+  },
+  ROLES: {
+    ALERT_ROLE: '757950405287084092'
   }
 }

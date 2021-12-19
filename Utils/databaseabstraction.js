@@ -59,12 +59,12 @@ export default class DatabaseAbstraction {
   }
 
   getUserPermissionLevel (uid) {
-    const sql = `SELECT value FROM ${config.DATABASE_CONFIG.TABLES.TABLE_PERMMISSIONS.name} WHERE uid = ?`
+    const sql = `SELECT value FROM '${config.DATABASE_CONFIG.TABLES.TABLE_PERMMISSIONS.name}' WHERE uid = ?`
     return parseInt(this.connection.prepare(sql).get(uid).value)
   }
 
   setUserPemissions (uid, permissionLevel) {
-    const sql = `UPDATE ${config.DATABASE_CONFIG.TABLES.TABLE_PERMMISSIONS.name} SET value = @value WHERE uid = @uid`
+    const sql = `UPDATE '${config.DATABASE_CONFIG.TABLES.TABLE_PERMMISSIONS.name}' SET value = @value WHERE uid = @uid`
     const statement = this.connection.prepare(sql)
     statement.run({
       uid: uid,
@@ -81,12 +81,12 @@ export default class DatabaseAbstraction {
   }
 
   getConfigOption (configOption) {
-    const sql = `SELECT value FROM ${config.DATABASE_CONFIG.TABLES.TABLE_CONFIG.name} WHERE name = @name`
+    const sql = `SELECT value FROM '${config.DATABASE_CONFIG.TABLES.TABLE_CONFIG.name}' WHERE name = @name`
     return parseInt(this.connection.prepare(sql).get(configOption).value)
   }
 
   setConfigOption (configOption, newValue) {
-    const sql = `UPDATE ${config.DATABASE_CONFIG.TABLES.TABLE_CONFIG.name} SET value = @value WHERE name = @name`
+    const sql = `UPDATE '${config.DATABASE_CONFIG.TABLES.TABLE_CONFIG.name}' SET value = @value WHERE name = @name`
     const statement = this.connection.prepare(sql)
     statement.run({
       name: configOption,

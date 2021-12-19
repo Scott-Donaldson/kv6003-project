@@ -195,7 +195,7 @@ export default class MessageHandler {
       const collector = message.createReactionCollector({ filter, time: timeoutTime })
       collector.on('collect', async (r, u) => {
         page = onCollect(r.emoji, message, page, getEmbed, collector)
-        if(r.emoji.name !== emojiStop ) r.users.remove(u.id)
+        if (r.emoji.name !== emojiStop) r.users.remove(u.id)
       })
 
       collector.on('end', () => {
@@ -205,10 +205,12 @@ export default class MessageHandler {
 
     const sendPaginationMessage = (channel, getEmbed) => {
       channel.send({ embeds: [getEmbed(0)] })
-        .then(msg => msg.react(emojiPrev))
-        .then(msgReaction => msgReaction.message.react(emojiNext))
-        .then(msgReaction => msgReaction.message.react(emojiStop))
-        .then(msgReaction => createCollectorMessage(msgReaction.message, getEmbed))
+        .then(msg => {
+          msg.react(emojiPrev)
+          msg.react(emojiNext)
+          msg.react(emojiStop)
+          createCollectorMessage(msg, getEmbed)
+        })
     }
 
     sendPaginationMessage(params.channel, getEmbed)
