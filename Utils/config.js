@@ -55,7 +55,7 @@ export default {
           value: 'INT'
         },
         default: [
-          { uid: '148530891679858688', value: 4 }
+          { uid: '148530891679858688', value: 0x1 }
         ]
       },
       TABLE_BYPASSES: {
@@ -87,6 +87,21 @@ export default {
           { id: 0, flag: 0x1, name: 'ALERT' },
           { id: 1, flag: 0x2, name: 'WARN' },
           { id: 2, flag: 0x4, name: 'REMOVE' }
+        ]
+      },
+      TABLE_PERMISSION_MAP: {
+        name: 'zeus-permission-map',
+        schema: {
+          name: 'TEXT',
+          flag: 'INT'
+        },
+        default: [
+          { name: 'ADMINISTRATOR', flag: 0x1 },
+          { name: 'CAN_VIEW_SYS_LOG', flag: 0x2 },
+          { name: 'CAN_VIEW_USR_LOG', flag: 0x4 },
+          { name: 'CAN_CHANGE_CONF', flag: 0x8 },
+          { name: 'CAN_ADD_BYPASS', flag: 0x10 },
+          { name: 'CAN_ADD_PERMS', flag: 0x20 }
         ]
       }
     }

@@ -63,7 +63,7 @@ export default class DatabaseAbstraction {
     return parseInt(this.connection.prepare(sql).get(uid).value)
   }
 
-  setUserPemissions (uid, permissionLevel) {
+  setUserPemissionLevel (uid, permissionLevel) {
     const sql = `UPDATE '${config.DATABASE_CONFIG.TABLES.TABLE_PERMMISSIONS.name}' SET value = @value WHERE uid = @uid`
     const statement = this.connection.prepare(sql)
     statement.run({
@@ -106,6 +106,11 @@ export default class DatabaseAbstraction {
 
   getSystemLogMessages () {
     const sql = `SELECT message, timestamp, type FROM '${config.DATABASE_CONFIG.TABLES.TABLE_SYSTEM_LOGS.name}'`
+    return this.connection.prepare(sql).all()
+  }
+
+  getPermissionMap () {
+    const sql = `SELECT name, flag FROM '${config.DATABASE_CONFIG.TABLES.TABLE_PERMISSION_MAP.name}'`
     return this.connection.prepare(sql).all()
   }
 }
