@@ -63,7 +63,7 @@ export default class DatabaseAbstraction {
     return parseInt(this.connection.prepare(sql).get(uid).value)
   }
 
-  setUserPemissionLevel (uid, permissionLevel) {
+  setUserPermissionLevel (uid, permissionLevel) {
     const sql = `UPDATE '${config.DATABASE_CONFIG.TABLES.TABLE_PERMMISSIONS.name}' SET value = @value WHERE uid = @uid`
     const statement = this.connection.prepare(sql)
     statement.run({
@@ -112,5 +112,11 @@ export default class DatabaseAbstraction {
   getPermissionMap () {
     const sql = `SELECT name, flag FROM '${config.DATABASE_CONFIG.TABLES.TABLE_PERMISSION_MAP.name}'`
     return this.connection.prepare(sql).all()
+  }
+
+  isUserInPermissionTable (uid) {
+    const sql = `SELECT COUNT(*) FROM '${config.DATABASE_CONFIG.TABLES.TABLE_PERMMISSIONS.name} WHERE uid = ?'`
+    let data = this.connections.prepare(sql).get(uid)
+    return data[Object.keys(data)[0]]
   }
 }

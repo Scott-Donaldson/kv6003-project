@@ -215,4 +215,82 @@ export default class MessageHandler {
 
     sendPaginationMessage(params.channel, getEmbed)
   }
+
+  static missingPermission (channel, permission) {
+    const embed = this.basicEmbed({
+      title: 'Missing Permission',
+      description: `User missing ${permission} permission`
+    })
+    this.sendEmbed({
+      channel: channel,
+      message: embed
+    })
+  }
+
+  static generatePermissionEmbed (title, permissionArray, userPermissionArray, emojiArray) {
+    if (permissionArray.length !== emojiArray.length) throw new Error('Array lengths do not match')
+
+    const embed = new Discord.MessageEmbed()
+
+    let description = ''
+    for (let i = 0; i < permissionArray.length; i++) {
+      description += `${emojiArray[i]} | ${permissionArray[i]} : ${userPermissionArray.includes(permissionArray[i]) ? 'True' : 'False'}\n`
+    }
+
+    embed.setTitle(title)
+    embed.setDescription(description)
+    embed.setTimestamp()
+
+    return embed
+  }
+
+  static displayUserPermissions (params = {}) {
+    const emoji = ['🔴', '🟠', '🟡', '🟢', '🔵', '🟣']
+    const emojiStop = '🛑'
+    const embed = this.generatePermissionEmbed('User Permissions', params.allPermissions, params.userPermissions, emoji)
+    const timeoutTime = 1000 * 60 * 60
+    const filter = (reaction, user) => {
+      return (!user.bot) &&
+      (emoji.includes(reaction.emoji.name) || reaction.emoji.name === '🛑') &&
+      (user.id === params.invokerUid) &&
+      (params.userHasPermission || params.adminUser)
+    }
+
+    const onCollect = (clickedEmoji, collector, message) => {
+      const idx = emoji.indexOf(clickedEmoji.name)
+      if (clickedEmoji.name === emojiStop) collector.stop()
+      else {
+        if (params.allPermissions[idx] === 'ADMINISTRATOR' && params.adminUser) {
+          params.pm.toggleUserPermission(params.permissionUid, 'ADMINSTRATOR')
+        } else {
+          params.pm.toggleUserPermission(params.permissionUid, params.allPermissions[idx])
+        }
+        message.edit({ embeds: [this.generatePermissionEmbed('User Permissions', params.allPermissions, params.pm.getUserPermissions(params.permissionUid), emoji)] })
+      }
+    }
+
+    const createCollectorMessage = (message) => {
+      const collector = message.createReactionCollector({ filter, time: timeoutTime })
+      collector.on('collect', async (r, u) => {
+        onCollect(r.emoji, collector, message, u)
+        if (r.emoji.name !== emojiStop) r.users.remove(u.id)
+      })
+
+      collector.on('end', async () => {
+        message.delete()
+      })
+    }
+
+    const sendEmbed = (channel, embed) => {
+      channel.send({ embeds: [embed] })
+        .then(msg => {
+          emoji.forEach(e => {
+            msg.react(e)
+          })
+          msg.react(emojiStop)
+          createCollectorMessage(msg, embed)
+        })
+    }
+    sendEmbed(params.channel, embed)
+  }
 }

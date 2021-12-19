@@ -55,7 +55,7 @@ export default {
           value: 'INT'
         },
         default: [
-          { uid: '148530891679858688', value: 0x1 }
+          { uid: '148530891679858688', value: 1 }
         ]
       },
       TABLE_BYPASSES: {
@@ -73,7 +73,8 @@ export default {
         },
         default: [
           { statistic: 'messages_flagged', value: 0 },
-          { statistic: 'messages_checked', value: 0 }
+          { statistic: 'messages_checked', value: 0 },
+          { statistic: 'messages_command', value: 0 }
         ]
       },
       TABLE_ACTIONS: {

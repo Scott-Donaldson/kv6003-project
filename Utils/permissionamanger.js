@@ -12,6 +12,10 @@ export default class PermissionManager {
     this.connection.setUserPermissionLevel(uid, newLevel)
   }
 
+  getAvailablePermissions () {
+    return Object.keys(this.permissionEnum)
+  }
+
   getUserPermissions (uid) {
     const userPerms = []
     for (const name of Object.keys(this.permissionEnum)) {
@@ -36,13 +40,17 @@ export default class PermissionManager {
     else return false
   }
 
+  isUserAdmin (uid) {
+    return this.userHasPermission(uid, 'ADMINISTRATOR')
+  }
+
   userRemovePermission (uid, perm) {
-    const newPerm = this.getUserPermissionLevel(uid) | this.permissionEnum[perm]
+    const newPerm = this.getUserPermissionLevel(uid) &~ this.permissionEnum[perm]
     this.setUserPermissionLevel(uid, newPerm)
   }
 
   userAddPermission (uid, perm) {
-    const newPerm = this.getUserPermissionLevel(uid) & ~this.permissionEnum[perm]
+    const newPerm = this.getUserPermissionLevel(uid) | this.permissionEnum[perm]
     this.setUserPermissionLevel(uid, newPerm)
   }
 

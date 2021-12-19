@@ -45,6 +45,7 @@ client.on('messageCreate', async message => {
   if (!config.ALLOWED_CHANNELS.includes(message.channel.id)) return
 
   if (message.author.bot) return
+  dba.incrementCount('messages_checked')
   if (message.content.startsWith(PREFIX)) {
     // Command Handler
     const args = message.content.slice(PREFIX.length).trim().split(/ +/)
@@ -58,8 +59,8 @@ client.on('messageCreate', async message => {
       ch: cmdHandler
     }
     cmdHandler.getCommand(cmd)?.execute(params)
+    dba.incrementCount('messages_command')
   } else {
-    dba.incrementCount('messages_checked')
     const res = await classifier.classifyMessage(message.content)
     if (!res.flagged) return
     dba.incrementCount('messages_flagged')
