@@ -11,6 +11,7 @@ export default class ViewPermissions {
   }
 
   viewUserPermissions (uid) {
+    if(!this.params.pm.userHasPermission('CAN_ADD_PERMS')) return MessageHandler.missingPermission(this.params.message.channel, 'CAN_ADD_PERMS')  
     const pm = this.params.pm
 
     MessageHandler.displayUserPermissions({

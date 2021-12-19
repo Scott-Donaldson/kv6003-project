@@ -11,6 +11,7 @@ export default class ViewLogs {
   }
 
   viewSystemLogs () {
+    if(!this.params.pm.userHasPermission('CAN_VIEW_SYS_LOG')) return MessageHandler.missingPermission(this.params.message.channel, 'CAN_VIEW_SYS_LOG')
     MessageHandler.paginationEmbedHandler({
       channel: this.params.message.channel,
       title: 'System',
@@ -20,6 +21,7 @@ export default class ViewLogs {
   }
 
   viewUserLogs () {
+    if(!this.params.pm.userHasPermission('CAN_VIEW_USR_LOG')) return MessageHandler.missingPermission(this.params.message.channel, 'CAN_VIEW_USR_LOG')
     const uid = this.params.args[2]
     MessageHandler.paginationEmbedHandler({
       channel: this.params.message.channel,
