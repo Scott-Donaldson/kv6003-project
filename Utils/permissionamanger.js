@@ -36,12 +36,15 @@ export default class PermissionManager {
 
   userHasPermission (uid, perm) {
     const user = this.getUserPermissionLevel(uid)
-    if ((user & this.permissionEnum[perm]) === this.permissionEnum[perm] || this.isUserAdmin(uid)) return true
+    if ((user & this.permissionEnum[perm]) === this.permissionEnum[perm]) return true
+    else if (this.isUserAdmin(uid)) return true
     else return false
   }
 
   isUserAdmin (uid) {
-    return this.userHasPermission(uid, 'ADMINISTRATOR')
+    const user = this.getUserPermissionLevel(uid)
+    if ((user & this.permissionEnum['ADMINISTRATOR']) === this.permissionEnum['ADMINISTRATOR']) return true
+    else return false
   }
 
   userRemovePermission (uid, perm) {

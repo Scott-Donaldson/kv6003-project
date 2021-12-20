@@ -251,7 +251,7 @@ export default class MessageHandler {
     const timeoutTime = 1000 * 60 * 60
     const filter = (reaction, user) => {
       return (!user.bot) &&
-      (emoji.includes(reaction.emoji.name) || reaction.emoji.name === '🛑') &&
+      (emoji.includes(reaction.emoji.name) || reaction.emoji.name === emojiStop) &&
       (user.id === params.invokerUid) &&
       (params.userHasPermission || params.adminUser)
     }
@@ -272,7 +272,7 @@ export default class MessageHandler {
     const createCollectorMessage = (message) => {
       const collector = message.createReactionCollector({ filter, time: timeoutTime })
       collector.on('collect', async (r, u) => {
-        onCollect(r.emoji, collector, message, u)
+        onCollect(r.emoji, collector, message)
         if (r.emoji.name !== emojiStop) r.users.remove(u.id)
       })
 
@@ -288,9 +288,75 @@ export default class MessageHandler {
             msg.react(e)
           })
           msg.react(emojiStop)
-          createCollectorMessage(msg, embed)
+          createCollectorMessage(msg)
         })
     }
+    sendEmbed(params.channel, embed)
+  }
+
+  static generateActionsEmbed (title, allActions, setActions, emoji) {
+    if(setActions.length <= 0 ) setActions.push("")
+
+    if (allActions.length !== emoji.length) throw new Error('Array lengths do not match')
+    const embed = new Discord.MessageEmbed()
+
+    let description = ''
+    for (let i = 0; i < allActions.length; i++) {
+      description += `${emoji[i]} | ${allActions[i]} : ${setActions.includes(allActions[i]) ? 'True' : 'False'}\n`
+    }
+
+    embed.setTitle(title)
+    embed.setDescription(description)
+    embed.setTimestamp()
+
+    return embed
+  }
+
+  static displayBotActions (params = {}) {
+    const emoji = ['🔴', '🟠', '🟡']
+    const emojiStop = '🛑'
+    const embed = this.generateActionsEmbed('Bot Actions', params.allActions, params.setActions, emoji)
+    const timeoutTime = 1000 * 60 * 60
+
+    const filter = (reaction, user) => {
+      return (!user.bot) &&
+      (emoji.includes(reaction.emoji.name) || reaction.emoji.name === emojiStop) &&
+      (user.id === params.invokerUid) &&
+      (params.userHasPermission || params.adminUser)
+    }
+
+    const onCollect = (clickedEmoji, collector, message) => {
+      const idx = emoji.indexOf(clickedEmoji.name)
+      if (clickedEmoji.name === emojiStop) collector.stop()
+      else {
+        params.am.toggleAction(params.allActions[idx])
+        message.edit({ embeds: [this.generateActionsEmbed('Bot Actions', params.allActions, params.am.getSetActions(), emoji)] })
+      }
+    }
+
+    const createCollectorMessage = (message) => {
+      const collector = message.createReactionCollector({ filter, time: timeoutTime })
+      collector.on('collect', (r, u) => {
+        onCollect(r.emoji, collector, message)
+        if (r.emoji.name !== emojiStop) r.users.remove(u.id)
+      })
+
+      collector.on('end', async () => {
+        message.delete()
+      })
+    }
+
+    const sendEmbed = (channel, embed) => {
+      channel.send({ embeds: [embed] })
+        .then(msg => {
+          emoji.forEach(e => {
+            msg.react(e)
+          })
+          msg.react(emojiStop)
+          createCollectorMessage(msg)
+        })
+    }
+
     sendEmbed(params.channel, embed)
   }
 }

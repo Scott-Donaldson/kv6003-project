@@ -45,7 +45,7 @@ export default {
         },
         default: [
           { name: 'threashold', value: 6 },
-          { name: 'bot_actions', value: 0x00 }
+          { name: 'bot_actions', value: 1 }
         ]
       },
       TABLE_PERMMISSIONS: {

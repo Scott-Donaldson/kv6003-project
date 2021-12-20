@@ -81,7 +81,7 @@ export default class DatabaseAbstraction {
   }
 
   getConfigOption (configOption) {
-    const sql = `SELECT value FROM '${config.DATABASE_CONFIG.TABLES.TABLE_CONFIG.name}' WHERE name = @name`
+    const sql = `SELECT value FROM '${config.DATABASE_CONFIG.TABLES.TABLE_CONFIG.name}' WHERE name = ?`
     return parseInt(this.connection.prepare(sql).get(configOption).value)
   }
 
@@ -118,5 +118,18 @@ export default class DatabaseAbstraction {
     const sql = `SELECT COUNT(*) FROM '${config.DATABASE_CONFIG.TABLES.TABLE_PERMMISSIONS.name}' WHERE uid = ?'`
     const data = this.connections.prepare(sql).get(uid)
     return data[Object.keys(data)[0]]
+  }
+
+  getActions () {
+    const sql = `SELECT name, flag FROM '${config.DATABASE_CONFIG.TABLES.TABLE_ACTIONS.name}'`
+    return this.connection.prepare(sql).all()
+  }
+
+  setActionValue (val) {
+    this.setConfigOption('bot_actions', val)
+  }
+
+  getActionValue () {
+    return this.getConfigOption('bot_actions')
   }
 }

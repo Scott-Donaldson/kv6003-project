@@ -7,6 +7,7 @@ import CommandHandler from './Utils/commandhandler.js'
 import DatabaseAbstraction from './Utils/databaseabstraction.js'
 import figlet from 'figlet'
 import PermissionManager from './Utils/permissionamanger.js'
+import ActionManager from './Utils/actionmanager.js'
 
 MessageHandler.log('console', figlet.textSync(config.BOTNAME) + ` v${config.VERSION}`)
 if (config.DEV_MODE) MessageHandler.log('console', '[ DEV ] Dev Mode Enabled')
@@ -25,6 +26,7 @@ const dba = new DatabaseAbstraction()
 const classifier = new Classifier(dba.getClassifierThreashold())
 const cmdHandler = new CommandHandler()
 const permManager = new PermissionManager(dba)
+const actionManager = new ActionManager(dba)
 
 /**
  * Client Ready Event Listener
@@ -56,7 +58,8 @@ client.on('messageCreate', async message => {
       args: args,
       dba: dba,
       pm: permManager,
-      ch: cmdHandler
+      ch: cmdHandler,
+      am: actionManager
     }
     cmdHandler.getCommand(cmd)?.execute(params)
     dba.incrementCount('messages_command')
