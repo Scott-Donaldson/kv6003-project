@@ -1,11 +1,11 @@
 {
   "name": "zeus",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "description": "zeus is a AI driven moderation bot for discord",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "standard --fix && node .",
+    "start": "standard --fix && nodemon .",
     "fix": "standard --fix"
   },
   "repository": {

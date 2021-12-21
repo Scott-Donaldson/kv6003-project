@@ -1,3 +1,7 @@
+import ActionAlert from './actions/actionalert.js'
+import ActionWarn from './actions/actionwarn.js'
+import ActionRemove from './actions/actionremove.js'
+
 export default class ActionManager {
   constructor (dba) {
     this.connection = dba
@@ -48,5 +52,19 @@ export default class ActionManager {
 
   toggleAction (action) {
     this.isActionEnabled(action) ? this.removeAction(action) : this.addAction(action)
+  }
+
+  responseActions () {
+    const arr = []
+    arr.push(ActionAlert)
+    arr.push(ActionWarn)
+    arr.push(ActionRemove)
+    return arr
+  }
+
+  respond (params) {
+    this.getActionNames.forEach((e, i) => {
+      if (this.isActionEnabled(e)) this.responseActions()[i].run(params)
+    })
   }
 }

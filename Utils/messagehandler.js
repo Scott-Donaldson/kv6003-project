@@ -224,6 +224,8 @@ export default class MessageHandler {
     this.sendEmbed({
       channel: channel,
       message: embed
+    }).then( msg => {
+      msg.delete(5_000)
     })
   }
 
@@ -295,7 +297,7 @@ export default class MessageHandler {
   }
 
   static generateActionsEmbed (title, allActions, setActions, emoji) {
-    if(setActions.length <= 0 ) setActions.push("")
+    if (setActions.length <= 0) setActions.push('')
 
     if (allActions.length !== emoji.length) throw new Error('Array lengths do not match')
     const embed = new Discord.MessageEmbed()

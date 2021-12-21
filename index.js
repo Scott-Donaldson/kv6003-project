@@ -68,6 +68,7 @@ client.on('messageCreate', async message => {
     if (!res.flagged) return
     dba.incrementCount('messages_flagged')
     dba.logUserMessage(message.content, message.author.id, message.createdAt.toISOString())
-    MessageHandler.log('channel', { embeds: [MessageHandler.outputResults(res, 'embed')] }, { channel: message.channel })
+    actionManager.respond(params)
+    // MessageHandler.log('channel', { embeds: [MessageHandler.outputResults(res, 'embed')] }, { channel: message.channel })
   }
 })
