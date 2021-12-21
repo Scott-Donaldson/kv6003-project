@@ -25,10 +25,12 @@ export default class MessageHandler {
 
   /**
      * Converts Classifier Result Object into Discord Rich Embed
-     * @param {Classifier.resultObject} res
+     * @param {Object}
      * @returns {Discord.MessageEmbed} Discord.MessageEmbed
      */
-  static embedParser (res) {
+  static embedParser (params = {}) {
+    const res = params.res
+    const message = params.message
     if (!res) throw new Error('No resultsObject received')
 
     if (res.message.length > 256) res.message = res.message.slice(0, 256) + '...'
@@ -39,9 +41,10 @@ export default class MessageHandler {
       messageContent += res.results[e] ? `${e}\n` : ''
     })
 
-    embed.setTitle('Message Detection')
+    embed.setTitle(params.title)
     embed.setDescription(messageContent)
-    embed.addField('Info', `Execution Time: ${res.executionTime.seconds}s ${res.executionTime.milliseconds}ms\nMessage: ${res.message}`, true)
+    embed.addField('Info', `Execution Time: ${res.executionTime.seconds}s ${res.executionTime.milliseconds}ms\nMessage: ${res.message}\nLink: ${message.url}\nPing: ${params.role}`, true)
+    embed.setTimestamp()
     return embed
   }
 
@@ -92,6 +95,7 @@ export default class MessageHandler {
     if ('description' in params) embed.setDescription(params.description)
     if ('footer' in params) embed.setFooter(params.footer)
     if ('timestamp' in params && params.timestamp === true) embed.setTimestamp()
+    if ('colour' in params) embed.setColor(params.colour)
     return embed
   }
 
@@ -224,7 +228,7 @@ export default class MessageHandler {
     this.sendEmbed({
       channel: channel,
       message: embed
-    }).then( msg => {
+    }).then(msg => {
       msg.delete(5_000)
     })
   }

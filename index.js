@@ -48,10 +48,12 @@ client.on('messageCreate', async message => {
 
   if (message.author.bot) return
   dba.incrementCount('messages_checked')
+
   if (message.content.startsWith(PREFIX)) {
     // Command Handler
     const args = message.content.slice(PREFIX.length).trim().split(/ +/)
     const cmd = args[0]
+
     const params = {
       client: client,
       message: message,
@@ -68,7 +70,15 @@ client.on('messageCreate', async message => {
     if (!res.flagged) return
     dba.incrementCount('messages_flagged')
     dba.logUserMessage(message.content, message.author.id, message.createdAt.toISOString())
+    const params = {
+      client: client,
+      message: message,
+      dba: dba,
+      pm: permManager,
+      ch: cmdHandler,
+      am: actionManager,
+      res: res
+    }
     actionManager.respond(params)
-    // MessageHandler.log('channel', { embeds: [MessageHandler.outputResults(res, 'embed')] }, { channel: message.channel })
   }
 })
