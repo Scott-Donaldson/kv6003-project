@@ -70,7 +70,7 @@ client.on('messageCreate', async message => {
     dba.incrementCount('messages_command')
   } else {
     if (bypassManager.checkBypasses(message)) return
-    
+
     const res = await classifier.classifyMessage(message.content)
     if (!res.flagged) return
 

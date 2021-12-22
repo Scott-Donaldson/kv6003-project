@@ -1,4 +1,5 @@
 import * as Discord from 'discord.js'
+import config from './config.js'
 /**
  * Author W19019810
  * MessageHandler provides a bunch of static methods to parse different types of methods into specific output types
@@ -364,5 +365,34 @@ export default class MessageHandler {
     }
 
     sendEmbed(params.channel, embed)
+  }
+
+  static generateStatsEmbed (params) {
+    const embed = new Discord.MessageEmbed()
+    embed.setTitle('Statistics')
+    embed.addField('Classifier', `
+    Messages Checked: ${params.dba.getStatCount('messages_checked')}
+    Messages Flagged: ${params.dba.getStatCount('messages_flagged')}
+    Commands Issued: ${params.dba.getStatCount('messages_command') + 1}`, true)
+
+    embed.addField('System', `
+    Memory Usage: ${(((process.memoryUsage().heapUsed) / 1024) / 1024).toFixed(0)}Mb
+    API Ping: ${params.client.ws.ping}Ms
+    Platform: ${process.platform}
+    Architecture: ${process.arch}
+    System Time: ${new Date().toLocaleDateString()}`, true)
+
+    embed.addField('Bot', `
+    Uptime: ${new Date(Math.floor(process.uptime()) * 1000).toISOString().substring(11,19)}
+    Bot Version: ${config.VERSION}`, true)
+
+    embed.addField('Server', `
+    Server Name: ${params.message.guild.name}
+    Member Count: ${params.client.guilds.cache.get(params.message.guild.id).memberCount}
+    `, true)
+
+    embed.setTimestamp()
+
+    return embed
   }
 }

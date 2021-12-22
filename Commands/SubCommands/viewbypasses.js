@@ -11,6 +11,5 @@ export default class ViewBypasses {
 
   viewActions () {
     if (!this.params.pm.userHasPermission(this.params.message.author.id, 'CAN_ADD_BYPASS')) return MessageHandler.missingPermission(this.params.message.channel, 'CAN_ADD_BYPASS')
-    
   }
 }
