@@ -5,6 +5,9 @@ export default class PermissionManager {
   }
 
   getUserPermissionLevel (uid) {
+    if (!this.isUserInPermissionTable) {
+      this.addUserToTable(uid)
+    }
     return this.connection.getUserPermissionLevel(uid)
   }
 
@@ -59,5 +62,19 @@ export default class PermissionManager {
 
   toggleUserPermission (uid, perm) {
     this.userHasPermission(uid, perm) ? this.userRemovePermission(uid, perm) : this.userAddPermission(uid, perm)
+  }
+
+  isUserInPermissionTable (uid) {
+    return this.connection.isUserInPermissionTable(uid)
+  }
+
+  addUserToTableWithPermission (uid, perm) {
+    if (!this.isUserInPermissionTable) {
+      this.connection.addUserToPermissionTable(uid, perm)
+    }
+  }
+
+  addUserToTable (uid) {
+    this.addUserToTableWithPermission(uid, 0)
   }
 }

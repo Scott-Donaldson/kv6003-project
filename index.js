@@ -8,6 +8,7 @@ import DatabaseAbstraction from './Utils/databaseabstraction.js'
 import figlet from 'figlet'
 import PermissionManager from './Utils/permissionamanger.js'
 import ActionManager from './Utils/actionmanager.js'
+import BypassManager from './Utils/bypassmanager.js'
 
 MessageHandler.log('console', figlet.textSync(config.BOTNAME) + ` v${config.VERSION}`)
 if (config.DEV_MODE) MessageHandler.log('console', '[ DEV ] Dev Mode Enabled')
@@ -27,6 +28,7 @@ const classifier = new Classifier(dba.getClassifierThreashold())
 const cmdHandler = new CommandHandler()
 const permManager = new PermissionManager(dba)
 const actionManager = new ActionManager(dba)
+const bypassManager = new BypassManager(dba)
 
 /**
  * Client Ready Event Listener
@@ -61,13 +63,17 @@ client.on('messageCreate', async message => {
       dba: dba,
       pm: permManager,
       ch: cmdHandler,
-      am: actionManager
+      am: actionManager,
+      bm: bypassManager
     }
     cmdHandler.getCommand(cmd)?.execute(params)
     dba.incrementCount('messages_command')
   } else {
+    if (bypassManager.checkBypasses(message)) return
+    
     const res = await classifier.classifyMessage(message.content)
     if (!res.flagged) return
+
     dba.incrementCount('messages_flagged')
     dba.logUserMessage(message.content, message.author.id, message.createdAt.toISOString())
     const params = {

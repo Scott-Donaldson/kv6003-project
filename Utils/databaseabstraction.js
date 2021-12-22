@@ -116,8 +116,19 @@ export default class DatabaseAbstraction {
 
   isUserInPermissionTable (uid) {
     const sql = `SELECT COUNT(*) FROM '${config.DATABASE_CONFIG.TABLES.TABLE_PERMMISSIONS.name}' WHERE uid = ?'`
-    const data = this.connections.prepare(sql).get(uid)
-    return data[Object.keys(data)[0]]
+    const data = this.connection.prepare(sql).get(uid)
+    return data[Object.keys(data)[0]] > 0
+  }
+
+  addUserToPermissionTable (uid, perm) {
+    const table = config.DATABASE_CONFIG.TABLES.TABLE_PERMMISSIONS.name
+    const schema = config.DATABASE_CONFIG.TABLES.TABLE_PERMMISSIONS.schema
+    const sql = `INSERT INTO '${table}' VALUES ${this.dbm.getDBI().generateFromSchemaWithoutTypeWithCharPrefix(schema, '@')}`
+    const statement = this.connection.prepare(sql)
+    statement.run({
+      uid: uid,
+      value: perm
+    })
   }
 
   getActions () {
@@ -131,5 +142,53 @@ export default class DatabaseAbstraction {
 
   getActionValue () {
     return this.getConfigOption('bot_actions')
+  }
+
+  findBypass (bypass, type) {
+    const table = config.DATABASE_CONFIG.TABLES.TABLE_BYPASSES.name
+    const sql = `SELECT COUNT(*) FROM ${table} WHERE id = @id AND type = @type`
+    const data = this.connection.prepare(sql).get({
+      id: bypass,
+      type: type
+    })
+    return data[Object.keys(data)[0]] > 0
+  }
+
+  findBypassUser (uid) {
+    return this.findBypass(uid, 'USER')
+  }
+
+  findBypassRole (roleid) {
+    return this.findBypass(roleid, 'ROLE')
+  }
+
+  findBypassChannel (channelid) {
+    return this.findBypass(channelid, 'CHANNEL')
+  }
+
+  addBypass (bypass, type) {
+    const table = config.DATABASE_CONFIG.TABLES.TABLE_BYPASSES.name
+    const schema = config.DATABASE_CONFIG.TABLES.TABLE_BYPASSES.schema
+    const sql = `INSERT INTO '${table}' VALUES ${this.dbm.getDBI().generateFromSchemaWithoutTypeWithCharPrefix(schema, '@')}`
+    const statement = this.connection.prepare(sql)
+    statement.run({
+      id: bypass,
+      type: type
+    })
+  }
+
+  removeBypass (bypass) {
+    const table = config.DATABASE_CONFIG.TABLES.TABLE_BYPASSES.name
+    const sql = `DELETE FROM '${table}' WHERE id = @id`
+    const statement = this.connection.prepare(sql)
+    statement.run({
+      id: bypass
+    })
+  }
+
+  getAllBypasses () {
+    const table = config.DATABASE_CONFIG.TABLES.TABLE_BYPASSES.name
+    const sql = `SELECT id, type FROM '${table}'`
+    return this.connection.prepare(sql).all()
   }
 }
