@@ -1,4 +1,5 @@
 import ViewActions from './SubCommands/viewactions.js'
+import ViewBypasses from './SubCommands/viewbypasses.js'
 import ViewLogs from './SubCommands/viewlogs.js'
 import ViewPermissions from './SubCommands/viewpermissions.js'
 import ViewStats from './SubCommands/viewstats.js'
@@ -9,6 +10,7 @@ const execute = (params = {}) => {
   const permissions = new ViewPermissions(params)
   const actions = new ViewActions(params)
   const stats = new ViewStats(params)
+  const bypasses = new ViewBypasses(params)
 
   switch (params.args[1].toLowerCase()) {
     case 'logs':
@@ -18,6 +20,7 @@ const execute = (params = {}) => {
       permissions.run()
       break
     case 'bypasses':
+      bypasses.run()
       break
     case 'stats':
       stats.run()

@@ -63,7 +63,7 @@ export default class ActionManager {
   }
 
   respond (params) {
-    this.getActionNames.forEach((e, i) => {
+    this.getActionNames().forEach((e, i) => {
       if (this.isActionEnabled(e)) this.responseActions()[i].run(params)
     })
   }

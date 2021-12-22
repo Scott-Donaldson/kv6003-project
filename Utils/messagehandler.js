@@ -383,7 +383,7 @@ export default class MessageHandler {
     System Time: ${new Date().toLocaleDateString()}`, true)
 
     embed.addField('Bot', `
-    Uptime: ${new Date(Math.floor(process.uptime()) * 1000).toISOString().substring(11,19)}
+    Uptime: ${new Date(Math.floor(process.uptime()) * 1000).toISOString().substring(11, 19)}
     Bot Version: ${config.VERSION}`, true)
 
     embed.addField('Server', `
@@ -394,5 +394,92 @@ export default class MessageHandler {
     embed.setTimestamp()
 
     return embed
+  }
+
+  static generateBypassHomepage (params = {}) {
+    return this.basicEmbed(params)
+  }
+
+  static generateBypassEmbed (params = {}) {
+    const title = params.title
+    let description = ''
+    params.bypasses.forEach(e => {
+      description += 'e\n'
+    })
+
+    return this.basicEmbed({
+      title: title,
+      description: description
+    })
+  }
+
+  static generateBypassEmbeds (params = {}) {
+    const embeds = []
+    embeds.push(this.generateBypassHomepage({
+      title: 'Bypasses homepage',
+      description: `Use the reacts to navigate!
+      🏠 : Homepage (here)
+      1️⃣ : User Bypasses
+      2️⃣ : Channel Bypasses
+      3️⃣ : Role Bypasses
+      🛑 : Close Message
+      `
+    }))
+
+    const bypasses = params.bm.getAllBypassesNames({
+      client: params.client,
+      message: params.message
+    })
+    Object.keys(bypasses).forEach(e => {
+      embeds.push(this.generateBypassEmbed({
+        title: `${e} Bypasses`,
+        bypasses: bypasses[e]
+      }))
+    })
+    return embeds
+  }
+
+  static displayBypasses (params = {}) {
+    const emojiHome = '🏠'
+    const emoji = ['1️⃣', '2️⃣', '3️⃣']
+    const emojiStop = '🛑'
+    const timeoutTime = 1000 * 60 * 60
+    const embeds = this.generateBypassEmbeds(params)
+
+    const filter = (reaction, user) => {
+      return (!user.bot) &&
+      (emoji.includes(reaction.emoji.name) || reaction.emoji.name === emojiHome || reaction.emoji.name === emojiStop) &&
+      (user.id === params.invokerID)
+    }
+
+    const onCollect = (clickedEmoji, collector, message) => {
+      const idx = emoji.indexOf(clickedEmoji.name)
+      if (clickedEmoji.name === emojiStop) collector.stop()
+      else if (clickedEmoji.name === emojiHome) message.edit({ embeds: [embeds[0]] })
+      else message.edit({ embeds: [embeds[idx + 1]] })
+    }
+
+    const createCollectorMessage = (message) => {
+      const collector = message.createReactionCollector({ filter, time: timeoutTime })
+      collector.on('collect', (r, u) => {
+        if (r.emoji.name !== emojiStop) r.users.remove(u.id)
+        onCollect(r.emoji, collector, message)
+      })
+
+      collector.on('end', async () => {
+        message.delete()
+      })
+    }
+
+    const sendEmbed = (channel, embed) => {
+      channel.send({ embeds: [embed] })
+        .then(msg => {
+          msg.react(emojiHome)
+          emoji.forEach(e => { msg.react(e) })
+          msg.react(emojiStop)
+          createCollectorMessage(msg)
+        })
+    }
+    sendEmbed(params.channel, embeds[0])
   }
 }
