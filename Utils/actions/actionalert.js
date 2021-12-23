@@ -6,7 +6,7 @@ export default class ActionAlert extends Action {
   static run (params = {}) {
     const channel = params.client.channels.cache.find(c => c.id === config.CHANNELS.LOG_CHANNEL)
     const mentionRole = `<@&${config.ROLES.ALERT_ROLE}>`
-    const title = `User has been toxic`
+    const title = 'User has been toxic'
 
     const embed = MessageHandler.outputResults({
       title: title,
