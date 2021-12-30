@@ -17,6 +17,12 @@ export default class DatabaseAbstraction {
     return res
   }
 
+  setClassifierThreashold (val) {
+    const table = config.DATABASE_CONFIG.TABLES.TABLE_CONFIG.name
+    const sql = `UPDATE '${table}' SET value = ${val} WHERE name = threashold`
+    this.connection.prepare(sql).run()
+  }
+
   getStatCount (stat) {
     const sql = `SELECT value FROM '${config.DATABASE_CONFIG.TABLES.TABLE_STATS.name}' WHERE statistic = ?`
     return parseInt(this.connection.prepare(sql).get(stat).value)
