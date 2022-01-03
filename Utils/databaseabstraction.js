@@ -121,7 +121,7 @@ export default class DatabaseAbstraction {
   }
 
   isUserInPermissionTable (uid) {
-    const sql = `SELECT COUNT(*) FROM '${config.DATABASE_CONFIG.TABLES.TABLE_PERMMISSIONS.name}' WHERE uid = ?'`
+    const sql = `SELECT COUNT(*) FROM '${config.DATABASE_CONFIG.TABLES.TABLE_PERMMISSIONS.name}' WHERE uid = ?`
     const data = this.connection.prepare(sql).get(uid)
     return data[Object.keys(data)[0]] > 0
   }

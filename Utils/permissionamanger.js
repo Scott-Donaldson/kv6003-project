@@ -4,8 +4,22 @@ export default class PermissionManager {
     this.permissionEnum = this.generateEnum(this.getPermissionMap())
   }
 
+  isUserInPermissionTable (uid) {
+    return this.connection.isUserInPermissionTable(uid)
+  }
+
+  addUserToTableWithPermission (uid, perm) {
+    if (!this.isUserInPermissionTable(uid)) {
+      this.connection.addUserToPermissionTable(uid, perm)
+    }
+  }
+
+  addUserToTable (uid) {
+    this.addUserToTableWithPermission(uid, 0)
+  }
+
   getUserPermissionLevel (uid) {
-    if (!this.isUserInPermissionTable) {
+    if (!this.isUserInPermissionTable(uid)) {
       this.addUserToTable(uid)
     }
     return this.connection.getUserPermissionLevel(uid)
@@ -62,19 +76,5 @@ export default class PermissionManager {
 
   toggleUserPermission (uid, perm) {
     this.userHasPermission(uid, perm) ? this.userRemovePermission(uid, perm) : this.userAddPermission(uid, perm)
-  }
-
-  isUserInPermissionTable (uid) {
-    return this.connection.isUserInPermissionTable(uid)
-  }
-
-  addUserToTableWithPermission (uid, perm) {
-    if (!this.isUserInPermissionTable) {
-      this.connection.addUserToPermissionTable(uid, perm)
-    }
-  }
-
-  addUserToTable (uid) {
-    this.addUserToTableWithPermission(uid, 0)
   }
 }

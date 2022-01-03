@@ -10,7 +10,7 @@ export default class ViewStats {
   }
 
   ViewStats () {
-    if (!this.params.pm.userHasPermission(this.params.message.author.id, 'CAN_VIES_SYS_LOG')) return MessageHandler.missingPermission(this.params.message.channel, 'CAN_VIES_SYS_LOG')
+    if (!this.params.pm.userHasPermission(this.params.message.author.id, 'CAN_VIEW_SYS_LOG')) return MessageHandler.missingPermission(this.params.message.channel, 'CAN_VIEW_SYS_LOG')
     MessageHandler.sendEmbed(
       {
         channel: this.params.message.channel,

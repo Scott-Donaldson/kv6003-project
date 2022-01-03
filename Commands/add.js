@@ -7,9 +7,6 @@ const execute = (params = {}) => {
   const bypass = new AddBypass(params)
 
   switch (params.args[1].toLowerCase()) {
-    // case 'permission':
-    //   permission.run()
-    //   break
     case 'bypass':
       bypass.run()
       break
