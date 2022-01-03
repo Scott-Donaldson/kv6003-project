@@ -9,6 +9,7 @@ import figlet from 'figlet'
 import PermissionManager from './Utils/permissionamanger.js'
 import ActionManager from './Utils/actionmanager.js'
 import BypassManager from './Utils/bypassmanager.js'
+import PresenceManager from './Utils/presencemanager.js'
 
 MessageHandler.log('console', figlet.textSync(config.BOTNAME) + ` v${config.VERSION}`)
 if (config.DEV_MODE) MessageHandler.log('console', '[ DEV ] Dev Mode Enabled')
@@ -29,15 +30,16 @@ const cmdHandler = new CommandHandler()
 const permManager = new PermissionManager(dba)
 const actionManager = new ActionManager(dba)
 const bypassManager = new BypassManager(dba)
-
+const presenceManager = new PresenceManager(dba, client)
 /**
  * Client Ready Event Listener
  */
 client.on('ready', () => {
   cmdHandler.loadCommands()
-  client.user.setPresence({ activities: [{ name: 'your messages', type: 'WATCHING' }] })
+  client.user.setPresence({ activities: [presenceManager.getRandom()] })
   MessageHandler.log('console', `[ BOT ] ${client.user.username}#${client.user.discriminator} is online!`)
   dba.logSystemMessage('STARTUP', 'Bot started')
+  presenceManager.changeOnInterval(1000 * 60 * 15)
 })
 
 /**

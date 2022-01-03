@@ -197,4 +197,10 @@ export default class DatabaseAbstraction {
     const sql = `SELECT id, type FROM '${table}'`
     return this.connection.prepare(sql).all()
   }
+
+  getAllPresences () {
+    const table = config.DATABASE_CONFIG.TABLES.TABLE_PRESENCES.name
+    const sql = `SELECT name, type FROM '${table}'`
+    return this.connection.prepare(sql).all()
+  }
 }

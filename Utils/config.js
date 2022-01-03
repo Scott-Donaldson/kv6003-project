@@ -104,6 +104,18 @@ export default {
           { name: 'CAN_ADD_BYPASS', flag: 0x10 },
           { name: 'CAN_ADD_PERMS', flag: 0x20 }
         ]
+      },
+      TABLE_PRESENCES: {
+        name: 'zeus-presences',
+        schema: {
+          name: 'TEXT',
+          type: 'TEXT'
+        },
+        default: [
+          { name: 'your messages', type: 'WATCHING' },
+          { name: 'a nice game of cards', type: 'PLAYING' },
+          { name: 'to some chill music', type: 'LISTENING' }
+        ]
       }
     }
   },
