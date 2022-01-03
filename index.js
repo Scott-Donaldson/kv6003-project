@@ -70,6 +70,7 @@ client.on('messageCreate', async message => {
     }
     cmdHandler.getCommand(cmd)?.execute(params)
     dba.incrementCount('messages_command')
+    dba.logSystemMessage('COMMAND', `${message.author.username}#${message.author.discriminator} ran ${cmd} with ${args.slice(1,args.length)}`)
   } else {
     if (bypassManager.checkBypasses(message)) return
 

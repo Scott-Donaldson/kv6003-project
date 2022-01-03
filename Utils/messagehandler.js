@@ -230,7 +230,7 @@ export default class MessageHandler {
       channel: channel,
       message: embed
     }).then(msg => {
-      msg.delete(5_000)
+      setTimeout(() => msg.delete(), 10_000)
     })
   }
 
@@ -404,7 +404,7 @@ export default class MessageHandler {
     const title = params.title
     let description = ''
     params.bypasses.forEach(e => {
-      description += 'e\n'
+      description += `${e}\n`
     })
 
     return this.basicEmbed({
@@ -415,21 +415,24 @@ export default class MessageHandler {
 
   static generateBypassEmbeds (params = {}) {
     const embeds = []
-    embeds.push(this.generateBypassHomepage({
-      title: 'Bypasses homepage',
-      description: `Use the reacts to navigate!
-      🏠 : Homepage (here)
-      1️⃣ : User Bypasses
-      2️⃣ : Channel Bypasses
-      3️⃣ : Role Bypasses
-      🛑 : Close Message
-      `
-    }))
 
     const bypasses = params.bm.getAllBypassesNames({
       client: params.client,
       message: params.message
     })
+
+    embeds.push(this.generateBypassHomepage({
+      title: 'Bypasses homepage',
+      description: `Use the reacts to navigate!
+      🏠 : Homepage (here)
+      1️⃣ : User Bypasses (${bypasses.USER.length})
+      2️⃣ : Role Bypasses (${bypasses.ROLE.length})
+      3️⃣ : Channel Bypasses (${bypasses.CHANNEL.length})
+      🛑 : Close Message
+      `
+    }))
+
+
     Object.keys(bypasses).forEach(e => {
       embeds.push(this.generateBypassEmbed({
         title: `${e} Bypasses`,
@@ -481,5 +484,24 @@ export default class MessageHandler {
         })
     }
     sendEmbed(params.channel, embeds[0])
+  }
+
+  static invalidArgumentEmbed (message, channel) {
+    const embed = this.basicEmbed({
+      title: 'Invalid Argument',
+      description: message,
+      timestamp: true,
+      colour: 'RED'
+    })
+    this.sendEmbed({ channel: channel, message: embed }).then(msg => setTimeout(() => msg.delete(), 10_000))
+  }
+  static success(message,channel){
+    const embed = this.basicEmbed({
+      title: 'Success',
+      description: message,
+      timestamp: true,
+      colour: 'GREEN'
+    })
+    this.sendEmbed({channel: channel, message: embed}).then(msg => setTimeout(() => msg.delete(), 10_000))
   }
 }

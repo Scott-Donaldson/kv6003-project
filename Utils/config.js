@@ -116,6 +116,17 @@ export default {
           { name: 'a nice game of cards', type: 'PLAYING' },
           { name: 'to some chill music', type: 'LISTENING' }
         ]
+      },
+      TABLE_BYPASS_TYPES: {
+        name: 'zeus-bypass-types',
+        schema: {
+          type: 'TEXT'
+        },
+        default: [
+          { type: 'CHANNEL' },
+          { type: 'USER' },
+          { type: 'ROLE' }
+        ]
       }
     }
   },

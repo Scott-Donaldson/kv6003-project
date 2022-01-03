@@ -1,3 +1,5 @@
+import MessageHandler from '../../Utils/messagehandler.js'
+
 export default class RemoveBypass {
   constructor (params) {
     this.params = params
@@ -8,6 +10,7 @@ export default class RemoveBypass {
   }
 
   removeBypass () {
-    this.params.dba.removeBypass(this.params.args[2])
+    if (!this.params.pm.userHasPermission(this.params.message.author.id, 'CAN_ADD_BYPASS')) return MessageHandler.missingPermission(this.params.message.channel, 'CAN_ADD_BYPASS')
+    this.params.bm.removeBypass(this.params.args[2])
   }
 }

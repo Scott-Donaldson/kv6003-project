@@ -198,6 +198,12 @@ export default class DatabaseAbstraction {
     return this.connection.prepare(sql).all()
   }
 
+  getBypassTypes () {
+    const table = config.DATABASE_CONFIG.TABLES.TABLE_BYPASS_TYPES.name
+    const sql = `SELECT type FROM '${table}'`
+    return this.connection.prepare(sql).all()
+  }
+
   getAllPresences () {
     const table = config.DATABASE_CONFIG.TABLES.TABLE_PRESENCES.name
     const sql = `SELECT name, type FROM '${table}'`

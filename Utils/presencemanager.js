@@ -13,7 +13,7 @@ export default class PresenceManager {
     return this.dba.getAllPresences()
   }
 
-  changeOnInterval(interval){
+  changeOnInterval (interval) {
     setInterval(() => {
       this.client.user.setPresence({ activities: [this.getRandom()] })
     }, interval)
