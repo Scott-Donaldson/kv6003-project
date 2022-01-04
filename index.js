@@ -66,7 +66,8 @@ client.on('messageCreate', async message => {
       pm: permManager,
       ch: cmdHandler,
       am: actionManager,
-      bm: bypassManager
+      bm: bypassManager,
+      classifier: classifier
     }
     cmdHandler.getCommand(cmd)?.execute(params)
     dba.incrementCount('messages_command')

@@ -4,23 +4,22 @@ import * as toxicmodel from '@tensorflow-models/toxicity'
 export default class Classifier {
   constructor (threashold) {
     if (!threashold) throw new Error('No threashold found')
-    if (isNaN(threashold)) throw new Error(`Threshold parameted must be a number! Got ${threashold} (${typeof (threashold)})`)
-    this._threashold = threashold / 10
+    this.setThreshold(threashold)
   }
 
   /**
      * @return {float}
      */
-  get threashold () {
-    return this._threashold
+  getThreashold () {
+    return this.threashold
   }
 
   /**
      * @param {float} newThreashold
      */
-  set threashold (newThreashold) {
+  setThreshold(newThreashold) {
     if (isNaN(newThreashold)) throw new Error(`Threshold parameted must be a number! Got ${newThreashold} (${typeof (newThreashold)})`)
-    this._threashold = newThreashold / 10
+    this.threashold = newThreashold / 10
   }
 
   /**
@@ -30,7 +29,7 @@ export default class Classifier {
      */
   async classifyMessage (message) {
     let timeTaken = process.hrtime()
-    const model = await toxicmodel.load(this._threashold)
+    const model = await toxicmodel.load(this.threashold)
     const res = await model.classify([message])
     timeTaken = process.hrtime(timeTaken)
     return this.parseClassifiedMessage(res, message, timeTaken)

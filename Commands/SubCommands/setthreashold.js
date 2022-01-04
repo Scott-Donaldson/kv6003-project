@@ -14,5 +14,6 @@ export default class SetThreashold {
     if (isNaN(val)) return MessageHandler.log('channel', 'Invalid parameter', { channel: this.params.message.channel })
     if (val < 0 || val >= 10) return MessageHandler.log('channel', 'Invalid parameter', { channel: this.params.message.channel })
     this.params.dba.setClassifierThreashold(val)
+    this.params.classifier.setThreashold(val)
   }
 }
