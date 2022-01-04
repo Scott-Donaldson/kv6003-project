@@ -25,7 +25,7 @@ client.login(process.env.TOKEN)
 const PREFIX = config.PREFIX
 
 const dba = new DatabaseAbstraction()
-const classifier = new Classifier(dba.getClassifierThreashold())
+const classifier = new Classifier(dba.getClassifierThreshold())
 const cmdHandler = new CommandHandler()
 const permManager = new PermissionManager(dba)
 const actionManager = new ActionManager(dba)

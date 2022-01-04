@@ -2,24 +2,24 @@ import '@tensorflow/tfjs-node'
 import * as toxicmodel from '@tensorflow-models/toxicity'
 
 export default class Classifier {
-  constructor (threashold) {
-    if (!threashold) throw new Error('No threashold found')
-    this.setThreshold(threashold)
+  constructor (threshold) {
+    if (!threshold) throw new Error('No threshold found')
+    this.setThreshold(threshold)
   }
 
   /**
      * @return {float}
      */
-  getThreashold () {
-    return this.threashold
+  getThreshold () {
+    return this.threshold
   }
 
   /**
-     * @param {float} newThreashold
+     * @param {float} newThreshold
      */
-  setThreshold(newThreashold) {
-    if (isNaN(newThreashold)) throw new Error(`Threshold parameted must be a number! Got ${newThreashold} (${typeof (newThreashold)})`)
-    this.threashold = newThreashold / 10
+  setThreshold(newThreshold) {
+    if (isNaN(newThreshold)) throw new Error(`Threshold parameted must be a number! Got ${newThreshold} (${typeof (newThreshold)})`)
+    this.threshold = newThreshold / 10
   }
 
   /**
@@ -29,7 +29,7 @@ export default class Classifier {
      */
   async classifyMessage (message) {
     let timeTaken = process.hrtime()
-    const model = await toxicmodel.load(this.threashold)
+    const model = await toxicmodel.load(this.threshold)
     const res = await model.classify([message])
     timeTaken = process.hrtime(timeTaken)
     return this.parseClassifiedMessage(res, message, timeTaken)
@@ -55,7 +55,7 @@ export default class Classifier {
      *
      * @returns {float} default value for threshold
      */
-  static defaultThreashold () {
+  static defaultThreshold () {
     return 0.9
   }
 }

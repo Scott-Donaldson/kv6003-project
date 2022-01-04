@@ -6,14 +6,14 @@ export default class SetThreashold {
   }
 
   run () {
-    this.setThreashold()
+    this.setThreshold()
   }
 
-  setThreashold () {
+  setThreshold () {
     const val = parseInt(this.params.args[2])
     if (isNaN(val)) return MessageHandler.log('channel', 'Invalid parameter', { channel: this.params.message.channel })
     if (val < 0 || val >= 10) return MessageHandler.log('channel', 'Invalid parameter', { channel: this.params.message.channel })
-    this.params.dba.setClassifierThreashold(val)
+    this.params.dba.setClassifierThreshold(val)
     this.params.classifier.setThreashold(val)
   }
 }

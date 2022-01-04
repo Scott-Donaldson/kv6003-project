@@ -44,7 +44,7 @@ export default {
           value: 'INT'
         },
         default: [
-          { name: 'threashold', value: 6 },
+          { name: 'threshold', value: 6 },
           { name: 'bot_actions', value: 1 }
         ]
       },

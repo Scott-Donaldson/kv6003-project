@@ -1,12 +1,12 @@
-import SetThreashold from './SubCommands/setthreashold.js'
+import SetThreshold from './SubCommands/setthreshold.js'
 
 const name = 'set'
 const execute = (params = {}) => {
-  const threashold = new SetThreashold(params)
+  const threashold = new SetThreshold(params)
 
   switch (params.args[1].toLowerCase()) {
     case 'threshold':
-      threashold.run()
+      threshold.run()
       break
     default:
       break

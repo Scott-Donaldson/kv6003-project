@@ -11,15 +11,15 @@ export default class DatabaseAbstraction {
     this.connection = this.dbm.getConnection()
   }
 
-  getClassifierThreashold () {
+  getClassifierThreshold () {
     const sql = `SELECT value FROM '${config.DATABASE_CONFIG.TABLES.TABLE_CONFIG.name}' WHERE name = ?`
-    const res = parseFloat(this.connection.prepare(sql).get('threashold').value) || Classifier.defaultThreashold()
+    const res = parseFloat(this.connection.prepare(sql).get('threshold').value) || Classifier.defaultThreashold()
     return res
   }
 
-  setClassifierThreashold (val) {
+  setClassifierThreshold (val) {
     const table = config.DATABASE_CONFIG.TABLES.TABLE_CONFIG.name
-    const sql = `UPDATE '${table}' SET value = ${val} WHERE name = threashold`
+    const sql = `UPDATE '${table}' SET value = ${val} WHERE name = threshold`
     this.connection.prepare(sql).run()
   }
 
