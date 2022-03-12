@@ -17,7 +17,7 @@ export default class Classifier {
   /**
      * @param {float} newThreshold
      */
-  setThreshold(newThreshold) {
+  setThreshold (newThreshold) {
     if (isNaN(newThreshold)) throw new Error(`Threshold parameted must be a number! Got ${newThreshold} (${typeof (newThreshold)})`)
     this.threshold = newThreshold / 10
   }

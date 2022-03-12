@@ -432,7 +432,6 @@ export default class MessageHandler {
       `
     }))
 
-
     Object.keys(bypasses).forEach(e => {
       embeds.push(this.generateBypassEmbed({
         title: `${e} Bypasses`,
@@ -495,13 +494,24 @@ export default class MessageHandler {
     })
     this.sendEmbed({ channel: channel, message: embed }).then(msg => setTimeout(() => msg.delete(), 10_000))
   }
-  static success(message,channel){
+
+  static success (message, channel) {
     const embed = this.basicEmbed({
       title: 'Success',
       description: message,
       timestamp: true,
       colour: 'GREEN'
     })
-    this.sendEmbed({channel: channel, message: embed}).then(msg => setTimeout(() => msg.delete(), 10_000))
+    this.sendEmbed({ channel: channel, message: embed }).then(msg => setTimeout(() => msg.delete(), 10_000))
+  }
+
+  static testEmbed (channel) {
+    const embed = this.basicEmbed({
+      title: 'Rich Embed',
+      description: 'with a description',
+      timestamp: true,
+      colour: 'GREEN'
+    })
+    this.sendEmbed({ channel: channel, message: embed })
   }
 }

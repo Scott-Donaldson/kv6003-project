@@ -7,6 +7,7 @@ export default class ViewLogs {
 
   run () {
     if (this.params.args[2] === 'system') this.viewSystemLogs()
+    if (this.params.args[2] === 'test') this.test()
     else this.viewUserLogs()
   }
 
@@ -29,5 +30,9 @@ export default class ViewLogs {
       entries: this.params.dba.getUsersMessagesFromLog(uid),
       invokerUid: this.params.message.author.id
     })
+  }
+
+  test () {
+    MessageHandler.testEmbed(this.params.message.channel)
   }
 }

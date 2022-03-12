@@ -11,6 +11,9 @@ import ActionManager from './Utils/actionmanager.js'
 import BypassManager from './Utils/bypassmanager.js'
 import PresenceManager from './Utils/presencemanager.js'
 
+export const TF_CPP_MIN_LOG_LEVEL=2
+
+
 MessageHandler.log('console', figlet.textSync(config.BOTNAME) + ` v${config.VERSION}`)
 if (config.DEV_MODE) MessageHandler.log('console', '[ DEV ] Dev Mode Enabled')
 
@@ -71,7 +74,7 @@ client.on('messageCreate', async message => {
     }
     cmdHandler.getCommand(cmd)?.execute(params)
     dba.incrementCount('messages_command')
-    dba.logSystemMessage('COMMAND', `${message.author.username}#${message.author.discriminator} ran ${cmd} with ${args.slice(1,args.length)}`)
+    dba.logSystemMessage('COMMAND', `${message.author.username}#${message.author.discriminator} ran ${cmd} with ${args.slice(1, args.length)}`)
   } else {
     if (bypassManager.checkBypasses(message)) return
 
