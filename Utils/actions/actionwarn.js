@@ -9,7 +9,6 @@ export default class ActionWarn extends Action {
       description: 'Dont be toxic!',
       colour: 'RED'
     })
-    console.log(embed)
     MessageHandler.sendEmbed({
       message: embed,
       channel: params.message.channel
