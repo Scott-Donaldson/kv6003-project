@@ -445,7 +445,7 @@ export default class MessageHandler {
     const emojiHome = '🏠'
     const emoji = ['1️⃣', '2️⃣', '3️⃣']
     const emojiStop = '🛑'
-    const timeoutTime = 1000 * 60 * 60
+    const timeoutTime = 1000 * 60 * 60 // 1 hour
     const embeds = this.generateBypassEmbeds(params)
 
     const filter = (reaction, user) => {

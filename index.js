@@ -11,9 +11,6 @@ import ActionManager from './Utils/actionmanager.js'
 import BypassManager from './Utils/bypassmanager.js'
 import PresenceManager from './Utils/presencemanager.js'
 
-export const TF_CPP_MIN_LOG_LEVEL=2
-
-
 MessageHandler.log('console', figlet.textSync(config.BOTNAME) + ` v${config.VERSION}`)
 if (config.DEV_MODE) MessageHandler.log('console', '[ DEV ] Dev Mode Enabled')
 
@@ -24,7 +21,9 @@ const client = new Discord.Client({
     Discord.Intents.FLAGS.GUILD_MESSAGE_REACTIONS
   ]
 })
+
 client.login(process.env.TOKEN)
+
 const PREFIX = config.PREFIX
 
 const dba = new DatabaseAbstraction()
@@ -54,6 +53,7 @@ client.on('messageCreate', async message => {
   if (!config.ALLOWED_CHANNELS.includes(message.channel.id)) return
 
   if (message.author.bot) return
+
   dba.incrementCount('messages_checked')
 
   if (message.content.startsWith(PREFIX)) {

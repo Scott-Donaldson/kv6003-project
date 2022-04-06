@@ -50,7 +50,7 @@ export default class BypassManager {
     return obj
   }
 
-  getAllBypassesNames (params = {}) {
+  getAllBypassesNames () {
     const bps = this.getAllBypasses()
     const obj = { USER: [], ROLE: [], CHANNEL: [] }
     bps.forEach(e => {
